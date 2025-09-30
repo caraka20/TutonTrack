@@ -1,0 +1,183 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/* ================= Enums ================= */
+
+enum JenisTugas {
+  DISKUSI
+  ABSEN
+  TUGAS
+  QUIZ
+}
+
+enum StatusTugas {
+  BELUM
+  SELESAI
+}
+
+enum AdminRole {
+  OWNER
+  ADMIN
+}
+
+enum ReminderSource {
+  ADMIN
+  WEB
+}
+
+enum ReminderStatus {
+  PENDING
+  SENT
+  CANCELLED
+}
+
+enum ReminderChannel {
+  WA
+}
+
+/* =============== Admin (sederhana) =============== */
+
+model Admin {
+  id           Int       @id @default(autoincrement())
+  username     String    @unique @db.VarChar(50)
+  passwordHash String    @db.VarChar(255)
+  role         AdminRole @default(ADMIN)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  reminders Reminder[] // jejak reminder yang dibuat admin
+
+  @@index([role])
+  @@index([isActive])
+}
+
+/* =============== Core =============== */
+/**
+ * Pendaftaran: nama, nim, noHp. Login: nim ATAU noHp (dua-duanya unik).
+ */
+model Student {
+  id   Int    @id @default(autoincrement())
+  nim  String @unique @db.VarChar(30)
+  noHp String @unique @db.VarChar(20)
+  nama String @db.VarChar(100)
+
+  enrollments Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([nama])
+}
+
+model Course {
+  id   Int    @id @default(autoincrement())
+  nama String @unique @db.VarChar(120) // nama matkul saja
+
+  enrollments     Enrollment[]
+  courseDeadlines CourseDeadline[]     // ⬅ back-relation utk master deadline
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([nama])
+}
+
+/** Master deadline per (course, jenis, sesi) — di-set oleh OWNER/ADMIN */
+model CourseDeadline {
+  id        Int        @id @default(autoincrement())
+  courseId  Int
+  jenis     JenisTugas
+  sesi      Int
+  deadlineAt DateTime?
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, jenis, sesi]) // satu deadline per jenis+sesi dalam sebuah course
+  @@index([courseId])
+  @@index([deadlineAt])
+}
+
+model Enrollment {
+  id        Int         @id @default(autoincrement())
+  studentId Int
+  courseId  Int
+  items     TutonItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course  Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, courseId]) // 1 mahasiswa ambil 1 matkul sekali
+  @@index([studentId])
+  @@index([courseId])
+}
+
+/**
+ * Item per sesi:
+ * - Diskusi 1..8
+ * - Absen   1..8
+ * - Tugas   3,5,7
+ * - QUIZ    (opsional, sesi fleksibel)
+ */
+model TutonItem {
+  id           Int         @id @default(autoincrement())
+  enrollmentId Int
+  jenis        JenisTugas
+  sesi         Int
+  status       StatusTugas @default(BELUM)
+  nilai        Float?
+  deskripsi    String?     @db.VarChar(255)
+  deadlineAt   DateTime?
+  selesaiAt    DateTime?
+
+  reminders Reminder[] // daftar reminder terkait item ini
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  @@unique([enrollmentId, jenis, sesi]) // cegah duplikasi
+  @@index([enrollmentId])
+  @@index([deadlineAt])
+  @@index([jenis, sesi])
+}
+
+/* =============== Reminder (manual + preferensi WEB) =============== */
+/**
+ * Dibuat manual oleh admin (source=ADMIN, createdByAdminId != null) atau oleh user/web (source=WEB, createdByAdminId null).
+ * Admin menekan tombol “Kirim” → update status=SENT, sentAt=now().
+ * Tambahan:
+ *  - offsetMin & active: preferensi pengingat (WEB) per item (mis. H-1 = 1440 menit).
+ */
+model Reminder {
+  id               Int             @id @default(autoincrement())
+  itemId           Int
+  source           ReminderSource  @default(WEB)
+  status           ReminderStatus  @default(PENDING)
+  channel          ReminderChannel @default(WA)
+  note             String?         @db.VarChar(255) // catatan singkat (opsional)
+  createdByAdminId Int?                         // pengingat dibuat oleh admin mana (kalau dari WEB → null)
+  offsetMin        Int             @default(1440) // ⬅ H-1 (dalam menit)
+  active           Boolean         @default(true) // ⬅ preferensi ON/OFF
+  createdAt        DateTime        @default(now())
+  sentAt           DateTime?
+
+  item  TutonItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  admin Admin?    @relation(fields: [createdByAdminId], references: [id], onDelete: SetNull)
+
+  @@index([itemId])
+  @@index([status])
+  @@index([createdByAdminId])
+}

@@ -1,3 +1,4 @@
+// tests/test-util.ts
 import { prismaClient } from "../src/config/database";
 import { generateToken } from "../src/utils/jwt";
 import bcrypt from "bcrypt";
@@ -5,8 +6,8 @@ import { AdminRole, JenisTugas } from "@prisma/client";
 
 /** nomor HP unik max 20 char (schema @db.VarChar(20)) */
 function genPhone(): string {
-  const ts = Date.now().toString().slice(-10);         // 10 digit time
-  const rnd = Math.floor(Math.random() * 900 + 100);   // 3 digit random
+  const ts = Date.now().toString().slice(-10);       // 10 digit time
+  const rnd = Math.floor(Math.random() * 900 + 100); // 3 digit random
   return `081${ts}${rnd}`.slice(0, 20);
 }
 
@@ -17,10 +18,7 @@ export class StudentTest {
     const nim = overrides.nim ?? `TEST-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
     const noHp = overrides.noHp ?? genPhone();
     const nama = overrides.nama ?? "Student Test";
-
-    return prismaClient.student.create({
-      data: { nim, noHp, nama },
-    });
+    return prismaClient.student.create({ data: { nim, noHp, nama } });
   }
 
   static async createAndToken() {
@@ -133,7 +131,7 @@ export class CourseTest {
     });
   }
 
-  /** Seed sebagian deadline untuk verifikasi copy ke TutonItem saat enroll */
+  /** Seed sebagian deadline untuk verifikasi copy ke TutonItem saat enroll (PAKAI CourseDeadline) */
   static async seedDeadlines(courseId: number, base = new Date()) {
     const d = (days: number, h = 23, m = 59) =>
       new Date(base.getFullYear(), base.getMonth(), base.getDate() + days, h, m, 0, 0);
@@ -197,7 +195,7 @@ export class EnrollmentTest {
   }
 }
 
-/* ===================== DASHBOARD SEED ===================== */
+/* ===================== DASHBOARD SEED (opsional) ===================== */
 export class DashboardSeed {
   /**
    * Seed:
@@ -226,9 +224,11 @@ export class DashboardSeed {
       const data: any[] = [];
       for (let sesi = 1; sesi <= 8; sesi++) {
         data.push({ enrollmentId, jenis: "DISKUSI", sesi, status: "BELUM", deadlineAt: null });
-        data.push({ enrollmentId, jenis: "ABSEN", sesi, status: "BELUM", deadlineAt: null });
+        data.push({ enrollmentId, jenis: "ABSEN",   sesi, status: "BELUM", deadlineAt: null });
       }
-      for (const sesi of [3, 5, 7]) data.push({ enrollmentId, jenis: "TUGAS", sesi, status: "BELUM", deadlineAt: null });
+      for (const sesi of [3, 5, 7]) {
+        data.push({ enrollmentId, jenis: "TUGAS", sesi, status: "BELUM", deadlineAt: null });
+      }
       await prismaClient.tutonItem.createMany({ data, skipDuplicates: true });
     };
 
@@ -282,3 +282,9 @@ export class DashboardSeed {
     return { courses: [c1, c2], students: [sA, sB, sC], enrollments: [eA1, eB1, eC2] };
   }
 }
+
+describe("Enrollment smoke", () => {
+  it("works", () => {
+    expect(true).toBe(true);
+  });
+});

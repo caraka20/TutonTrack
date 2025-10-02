@@ -11,6 +11,7 @@ import { AdminController } from '../app/admin/admin.controller'
 import { ReminderController } from '../app/reminder/reminder.controller'
 import { ReportController } from '../app/report/report.controller'
 import { DashboardController } from '../app/dashboard/dashboard.controller'
+import { SessionWindowController } from '../app/session-window/session-window.controller'
 
 export const route = Router()
 
@@ -49,7 +50,7 @@ route.patch("/api/items/:itemId/desc", authAny, EnrollmentController.updateItemD
 route.get('/api/courses/suggest', CourseController.suggest)
 route.get('/api/courses', authAdmin, requireAdminRole('OWNER','ADMIN'), CourseController.list)
 route.get('/api/courses/:id', authAdmin, requireAdminRole('OWNER','ADMIN'), CourseController.detail)
-route.post('/api/courses', authStudent, CourseController.create) // student boleh create
+route.post('/api/courses', CourseController.create) // student boleh create
 route.patch('/api/courses/:id', authAdmin, requireAdminRole('OWNER','ADMIN'), CourseController.update)
 route.delete('/api/courses/:id', authAdmin, requireAdminRole('OWNER','ADMIN'), CourseController.remove)
 route.put('/api/courses/:courseId/deadlines', authAdmin, requireAdminRole('OWNER','ADMIN'), CourseController.putDeadlines)
@@ -68,9 +69,9 @@ route.post("/api/admin/deadlines/apply", authAdmin, requireAdminRole("OWNER","AD
 route.post("/api/admin/deadlines/shift", authAdmin, requireAdminRole("OWNER","ADMIN"), AdminController.shift)
 
 // REMINDERS (ADMIN)
-route.get("/api/admin/reminders", authAdmin, requireAdminRole("OWNER","ADMIN"), ReminderController.list)
-route.post("/api/admin/reminders/:id/send", authAdmin, requireAdminRole("OWNER","ADMIN"), ReminderController.send)
-route.post("/api/admin/reminders/generate-due", authAdmin, requireAdminRole("OWNER","ADMIN"), ReminderController.generateDue)
+route.get("/api/admin/reminders", ReminderController.list)
+route.post("/api/admin/reminders/:id/send", ReminderController.send)
+route.post("/api/admin/reminders/generate-due", ReminderController.generateDue)
 
 
 // REPORTS & EXPORT (OWNER/ADMIN)
@@ -81,3 +82,7 @@ route.get('/api/admin/reports/export.csv', authAdmin, requireAdminRole('OWNER'),
 route.get("/api/admin/dashboard/summary",     authAdmin, requireAdminRole("OWNER","ADMIN"), DashboardController.summary)
 route.get("/api/admin/dashboard/top-risk",    authAdmin, requireAdminRole("OWNER","ADMIN"), DashboardController.topRisk)
 route.get("/api/admin/dashboard/courses/heatmap", authAdmin, requireAdminRole("OWNER","ADMIN"), DashboardController.coursesHeatmap)
+
+route.get ("/api/admin/session-windows", SessionWindowController.list)
+route.put ("/api/admin/session-windows", authAdmin, requireAdminRole("OWNER","ADMIN"), SessionWindowController.put)
+

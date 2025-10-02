@@ -60,24 +60,28 @@ export class EnrollmentRepository {
     }
   }
 
-  /** Generate 8 diskusi, 8 absen, 3 tugas (+quiz opsional) dan copy deadline dari CourseDeadline */
+  /**
+   * Generate 8 diskusi, 8 absen, 3 tugas (+quiz opsional)
+   * Deadline diisi dari MASTER GLOBAL `sessionWindow` (bukan per-course).
+   * sessionWindow.endAt → TutonItem.deadlineAt
+   */
   static async createItemsForEnrollment(params: {
     enrollmentId: number
     courseId: number
     withQuiz?: boolean
     quizSesi?: number[]
   }) {
-    const { enrollmentId, courseId, withQuiz, quizSesi } = params
+    const { enrollmentId, withQuiz, quizSesi } = params
 
-    // template deadline per course (opsional)
-    const deadlines = await prismaClient.courseDeadline.findMany({
-      where: { courseId },
-      select: { jenis: true, sesi: true, deadlineAt: true },
+    // Ambil semua window yang relevan
+    const windows = await prismaClient.sessionWindow.findMany({
+      select: { jenis: true, sesi: true, endAt: true },
     })
-    const ddMap = new Map<string, Date | null>()
-    for (const d of deadlines) ddMap.set(`${d.jenis}:${d.sesi}`, d.deadlineAt ?? null)
+    const winMap = new Map<string, Date | null>(
+      windows.map((w) => [`${w.jenis}:${w.sesi}`, w.endAt ?? null]),
+    )
     const findDeadline = (jenis: JenisTugas, sesi: number) =>
-      ddMap.get(`${jenis}:${sesi}`) ?? null
+      winMap.get(`${jenis}:${sesi}`) ?? null
 
     const payload: Prisma.TutonItemCreateManyInput[] = []
 
@@ -272,16 +276,23 @@ export class EnrollmentRepository {
     return true
   }
 
-  /** Ambil master deadline course */
-  static async getCourseDeadlines(courseId: number) {
-    return prismaClient.courseDeadline.findMany({
-      where: { courseId },
-      select: { jenis: true, sesi: true, deadlineAt: true },
+  /**
+   * Ambil “master deadline” yang sekarang bersumber dari `sessionWindow`
+   * (param courseId diabaikan agar kompatibel dgn signature lama).
+   */
+  static async getCourseDeadlines(_courseId: number) {
+    const wins = await prismaClient.sessionWindow.findMany({
+      select: { jenis: true, sesi: true, endAt: true },
     })
+    // Samakan bentuk keluaran lama: { jenis, sesi, deadlineAt }
+    return wins.map((w) => ({ jenis: w.jenis, sesi: w.sesi, deadlineAt: w.endAt }))
   }
 
   /** Terapkan deadline ke satu enrollment saja (by jenis+sesi) */
-  static async applyDeadlinesToEnrollment(enrollId: number, dls: Array<{ jenis: JenisTugas; sesi: number; deadlineAt: Date | null }>) {
+  static async applyDeadlinesToEnrollment(
+    enrollId: number,
+    dls: Array<{ jenis: JenisTugas; sesi: number; deadlineAt: Date | null }>
+  ) {
     let affected = 0
     for (const d of dls) {
       const res = await prismaClient.tutonItem.updateMany({
@@ -311,19 +322,12 @@ export class EnrollmentRepository {
     })
   }
 
-  /** Update deskripsi (tanpa ubah field lain) – pastikan ownership dicek di service */
+  /** Update deskripsi */
   static async updateItemDesc(itemId: number, deskripsi: string) {
     return prismaClient.tutonItem.update({
       where: { id: itemId },
       data: { deskripsi },
-      select: {
-        id: true,
-        jenis: true,
-        sesi: true,
-        deskripsi: true,
-        updatedAt: true,
-      },
+      select: { id: true, jenis: true, sesi: true, deskripsi: true, updatedAt: true },
     })
   }
-  
 }

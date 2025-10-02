@@ -1,20 +1,14 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import router from "./routes";
+import http from 'http'
+import app from './app'
 
-dotenv.config();
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use("/api", router);
+// Setup HTTP Server
+const server = http.createServer(app)
 
-if (process.env.NODE_ENV !== "test") {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
-    console.log(`🚀 API running at http://localhost:${PORT}`);
-  });
+// Jalankan server hanya jika bukan import (misal: saat npx ts-node src/server.ts)
+if (require.main === module) {
+  const PORT = process.env.PORT || 3001
+  server.listen(PORT, () => {
+    console.log(`🚀 Server running at http://localhost:${PORT}`)
+  })
 }
-
-export default app; // ⬅ supaya bisa dipanggil di test

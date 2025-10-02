@@ -146,9 +146,9 @@ export class CourseService {
   }
 
   // ===== Delete (admin) =====
-  static remove(id: number) {
-    // (opsional) di sini bisa tambahkan guard “jika masih ada enrollment, tolak”
-    return CourseRepository.remove(id)
+  static remove(id: number, force = false) {
+    if (force) return CourseRepository.removeCascade(id);
+    return CourseRepository.remove(id);
   }
 
   // ===== Deadlines (admin) =====

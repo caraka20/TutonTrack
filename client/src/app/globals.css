@@ -96,3 +96,97 @@ html, body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer base {
+  :root {
+    /* Perkiraan palet Universitas Terbuka */
+    --ut-blue: #003399;  /* biru UT */
+    --ut-blue-600: #0a47cc;
+    --ut-sky: #2aa7ff;  /* aksen biru muda */
+    --ut-gold: #f5b700; /* emas UT */
+    --ut-bg-dark: #0b1020;
+  }
+}
+
+@layer utilities {
+  .field-input { @apply w-full bg-transparent outline-none placeholder-white/70; }
+
+  /* tombol gradien rasa “mahal” (biru → emas) */
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-2 font-medium text-white transition;
+    background-image: linear-gradient(90deg, var(--ut-blue-600), var(--ut-gold));
+    /* pakai CSS langsung untuk shadow agar tidak bentrok dengan Tailwind */
+    box-shadow: 0 12px 28px rgba(245, 183, 0, 0.20);
+  }
+
+  .btn-primary:disabled {
+    @apply opacity-70 cursor-not-allowed;
+  }
+}
+
+@layer utilities {
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  /* spinner elegan dengan gradien UT */
+  .ut-spinner {
+    position: relative;
+    border-radius: 9999px;
+    --ring: conic-gradient(from 180deg, var(--ut-gold,#f5b700), var(--ut-sky,#2aa7ff), var(--ut-gold,#f5b700));
+    background: radial-gradient(circle at center, rgba(255,255,255,.08) 0 40%, transparent 41%) , var(--ring);
+    mask: radial-gradient(circle at center, transparent 55%, #000 56%);
+    -webkit-mask: radial-gradient(circle at center, transparent 55%, #000 56%);
+    animation: utspin 900ms linear infinite;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset, 0 2px 12px rgba(0,0,0,.25);
+  }
+  @keyframes utspin { to { transform: rotate(1turn); } }
+}
+
+/* ==== UT Glass UI add-ons (non-breaking) ==== */
+@layer utilities {
+  /* kartu toolbar berasa “mahal” */
+  .toolbar-card {
+    @apply rounded-2xl border px-3 py-3 md:px-4 md:py-4;
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
+    backdrop-filter: blur(10px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      0 8px 30px rgba(0,0,0,0.25);
+    border-color: rgba(255,255,255,0.10);
+    position: relative;
+  }
+  .toolbar-card::after {
+    content: "";
+    position: absolute; inset: -1px; border-radius: 1rem; pointer-events: none;
+    background: linear-gradient(135deg, rgba(42,167,255,.25), rgba(245,183,0,.25));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    padding: 1px;
+  }
+
+  /* input/select glassy */
+  .input-glass {
+    @apply h-11 rounded-xl border px-3 text-sm outline-none transition;
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.12);
+    color: hsl(var(--foreground));
+  }
+  .input-glass::placeholder { color: rgba(255,255,255,0.55); }
+  .input-glass:focus {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.20);
+  }
+
+  /* tombol netral kaca */
+  .btn-glass {
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium transition;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .btn-glass:hover { background: rgba(255,255,255,0.10); }
+
+  /* ikon kecil */
+  .icon-muted { color: rgba(255,255,255,0.7); }
+
+  /* spacing konsisten */
+  .toolbar-grid { @apply flex flex-col gap-3 md:flex-row md:items-center; }
+}

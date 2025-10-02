@@ -1,6 +1,6 @@
 // server/src/app/course/course.repository.ts
 import { prismaClient } from "../../config/database"
-import { Prisma } from "@prisma/client"
+import { Prisma, JenisTugas } from "@prisma/client"
 import {
   CourseDetailResponse,
   CourseListItem,
@@ -12,11 +12,15 @@ import {
 } from "./course.model"
 import { RepoError } from "../student/student.repository"
 
+/** Util: key konsisten untuk pair (jenis,sesi) */
+type Key = `${JenisTugas}:${number}`
+const k = (j: JenisTugas, s: number): Key => `${j}:${s}` as Key
+
 export class CourseRepository {
-  /* ============ SUGGEST (public) ============ */
+  /* ================== SUGGEST (public) ================== */
   static async suggest(q: string, limit = 10): Promise<CourseSuggestItem[]> {
     const rows = await prismaClient.course.findMany({
-      where: { nama: { contains: q } }, // kolasi MySQL biasanya CI
+      where: { nama: { contains: q } },
       orderBy: { nama: "asc" },
       take: Math.min(Math.max(limit, 1), 20),
       select: { id: true, nama: true },
@@ -24,7 +28,7 @@ export class CourseRepository {
     return rows
   }
 
-  /* ============ LIST (admin) ============ */
+  /* ================== LIST (admin) ================== */
   static async list(q: CourseListQuery): Promise<{ items: CourseListItem[]; total: number }> {
     const n = q.q?.trim()
     const where: Prisma.CourseWhereInput | undefined = n ? { nama: { contains: n } } : undefined
@@ -36,56 +40,51 @@ export class CourseRepository {
     const skip = ((q.page ?? 1) - 1) * (q.limit ?? 10)
     const take = q.limit ?? 10
 
-    // gunakan SELECT (bukan include) dan _count di bawah select
-    const [rows, total] = await Promise.all([
+    const [rows, total, winCount] = await Promise.all([
       prismaClient.course.findMany({
         where,
         orderBy,
         skip,
         take,
-        select: {
-          id: true,
-          nama: true,
-          createdAt: true,
-          _count: { select: { courseDeadlines: true } },
-        },
+        select: { id: true, nama: true, createdAt: true },
       }),
       prismaClient.course.count({ where }),
+      prismaClient.sessionWindow.count(), // global fixed windows
     ])
 
     const items: CourseListItem[] = rows.map((r) => ({
       id: r.id,
       nama: r.nama,
-      deadlineCount: r._count.courseDeadlines,
+      deadlineCount: winCount, // sama untuk semua course (global, fixed)
       createdAt: r.createdAt,
     }))
 
     return { items, total }
   }
 
-  /* ============ DETAIL (admin) ============ */
+  /* ================== DETAIL (admin) ================== */
   static async detail(id: number): Promise<CourseDetailResponse | null> {
-    const row = await prismaClient.course.findUnique({
+    const course = await prismaClient.course.findUnique({
       where: { id },
-      select: {
-        id: true,
-        nama: true,
-        createdAt: true,
-        updatedAt: true,
-        courseDeadlines: { select: { jenis: true, sesi: true, deadlineAt: true } },
-      },
+      select: { id: true, nama: true, createdAt: true, updatedAt: true },
     })
-    if (!row) return null
+    if (!course) return null
+
+    const wins = await prismaClient.sessionWindow.findMany({
+      orderBy: [{ jenis: "asc" }, { sesi: "asc" }],
+      select: { jenis: true, sesi: true, endAt: true },
+    })
+
     return {
-      id: row.id,
-      nama: row.nama,
-      deadlines: row.courseDeadlines.map(d => ({ jenis: d.jenis, sesi: d.sesi, deadlineAt: d.deadlineAt ?? null })),
-      createdAt: row.createdAt,
-      updatedAt: row.updatedAt,
+      id: course.id,
+      nama: course.nama,
+      deadlines: wins.map((w) => ({ jenis: w.jenis, sesi: w.sesi, deadlineAt: w.endAt ?? null })),
+      createdAt: course.createdAt,
+      updatedAt: course.updatedAt,
     }
   }
 
-  /* ============ CREATE (student & admin) ============ */
+  /* ================== CREATE (student & admin) ================== */
   static async create(body: CreateCourseBody) {
     return prismaClient.course.create({
       data: { nama: body.nama.trim() },
@@ -93,67 +92,93 @@ export class CourseRepository {
     })
   }
 
-  /* ============ UPDATE (admin) ============ */
+  /* ================== UPDATE (admin) ================== */
   static async update(id: number, body: UpdateCourseBody) {
     const updated = await prismaClient.course.update({
       where: { id },
-      data: {
-        ...(body.nama ? { nama: body.nama.trim() } : {}),
-      },
+      data: { ...(body.nama ? { nama: body.nama.trim() } : {}) },
       select: { id: true, nama: true, updatedAt: true },
     })
     return updated
   }
 
-  /* ============ DELETE (admin) ============ */
+  /* ================== DELETE (admin) ================== */
   static async remove(id: number) {
-    await prismaClient.course.delete({ where: { id } })
-    return { deleted: true }
-  }
-
-  /* ============ DEADLINES (admin) ============ */
-  static async replaceDeadlines(courseId: number, body: PutDeadlinesBody) {
-    // hapus semua lalu createMany
-    await prismaClient.courseDeadline.deleteMany({ where: { courseId } })
-    if (body.items?.length) {
-      await prismaClient.courseDeadline.createMany({
-        data: body.items.map((it) => ({
-          courseId,
-          jenis: it.jenis,
-          sesi: it.sesi,
-          deadlineAt: it.deadlineAt ?? null,
-        })),
-        skipDuplicates: true,
-      })
+    try {
+      await prismaClient.course.delete({ where: { id } })
+      return { deleted: true }
+    } catch (err: unknown) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2003") {
+        throw new RepoError(
+          "Course masih memiliki relasi (enrollment/items). Hapus relasinya terlebih dahulu atau gunakan force=1.",
+          400,
+          "HAS_RELATIONS"
+        )
+      }
+      throw err
     }
-    const count = await prismaClient.courseDeadline.count({ where: { courseId } })
-    return { count }
   }
 
-  static async getDeadlines(courseId: number) {
-    return prismaClient.courseDeadline.findMany({
-      where: { courseId },
+  /** HAPUS SEMUA RELASI LALU COURSE (cascade) */
+  static async removeCascade(id: number) {
+    await prismaClient.$transaction([
+      prismaClient.tutonItem.deleteMany({ where: { enrollment: { courseId: id } } }),
+      prismaClient.enrollment.deleteMany({ where: { courseId: id } }),
+    ])
+    await prismaClient.course.delete({ where: { id } })
+    return { deleted: true, cascade: true }
+  }
+
+  /* ================== DEADLINES (fixed/global) ================== */
+  /**
+   * DEADLINES FIXED → tidak boleh diubah per-course.
+   * Fungsi ini dipertahankan demi kompatibilitas API namun akan melempar error.
+   */
+  static async replaceDeadlines(_courseId: number, _body: PutDeadlinesBody) {
+    throw new RepoError("Deadlines bersifat global & tetap. Ubah hanya pengingat (reminder) H-n.", 400, "FIXED_DEADLINES")
+  }
+
+  /** Baca “deadlines” dari SessionWindow (global) untuk ditampilkan di UI admin. */
+  static async getDeadlines(_courseId: number) {
+    const wins = await prismaClient.sessionWindow.findMany({
       orderBy: [{ jenis: "asc" }, { sesi: "asc" }],
-      select: { jenis: true, sesi: true, deadlineAt: true },
+      select: { jenis: true, sesi: true, endAt: true },
     })
+    return wins.map((w) => ({ jenis: w.jenis, sesi: w.sesi, deadlineAt: w.endAt ?? null }))
   }
 
-  /** Propagasi master deadline → semua TutonItem di enrollment course tsb */
+  /**
+   * Apply: set ke semua TutonItem milik course:
+   *  - deadlineAt ← SessionWindow.endAt
+   *  - openAt     ← SessionWindow.startAt
+   */
   static async applyDeadlines(courseId: number) {
-    const dls = await prismaClient.courseDeadline.findMany({
-      where: { courseId },
-      select: { jenis: true, sesi: true, deadlineAt: true },
+    // pasangan (jenis,sesi) yang benar-benar dipakai item course ini
+    const pairs = await prismaClient.tutonItem.findMany({
+      where: { enrollment: { courseId } },
+      select: { jenis: true, sesi: true },
+      distinct: ["jenis", "sesi"],
     })
-    if (!dls.length) throw new RepoError("No deadlines to apply", 400)
+    if (!pairs.length) return { affected: 0 }
+
+    const sw = await prismaClient.sessionWindow.findMany({
+      where: { OR: pairs.map((p) => ({ jenis: p.jenis, sesi: p.sesi })) },
+      select: { jenis: true, sesi: true, startAt: true, endAt: true },
+    })
+
+    const mapSW = new Map<Key, { startAt: Date | null; endAt: Date | null }>()
+    for (const w of sw) mapSW.set(k(w.jenis, w.sesi), { startAt: w.startAt ?? null, endAt: w.endAt ?? null })
 
     let affected = 0
-    for (const d of dls) {
+    for (const { jenis, sesi } of pairs) {
+      const w = mapSW.get(k(jenis, sesi))
       const res = await prismaClient.tutonItem.updateMany({
-        where: { jenis: d.jenis, sesi: d.sesi, enrollment: { courseId } },
-        data: { deadlineAt: d.deadlineAt ?? null },
+        where: { jenis, sesi, enrollment: { courseId } },
+        data: { openAt: w?.startAt ?? null, deadlineAt: w?.endAt ?? null },
       })
       affected += res.count
     }
+
     return { affected }
   }
 }

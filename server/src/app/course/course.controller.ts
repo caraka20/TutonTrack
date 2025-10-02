@@ -78,8 +78,9 @@ export class CourseController {
   static async remove(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = Validation.validate(PARAMS_ID, req.params as any);
-      const data = await CourseService.remove(id);
-      return ResponseHandler.success(res, data, "Course deleted");
+      const force = String(req.query.force ?? "") === "1";
+      const data = await CourseService.remove(id, force);
+      return ResponseHandler.success(res, data, force ? "Course force-deleted" : "Course deleted");
     } catch (err) {
       next(err);
     }

@@ -16,17 +16,18 @@ export class AdminService {
     const ok = await bcrypt.compare(password, admin.passwordHash)
     if (!ok) throw AppError.fromCode(ERROR_CODE.UNAUTHORIZED, "Invalid credentials")
 
+    // ⬇️ Hapus `role` dari payload token (biar match interface kamu)
     const token = generateToken({ username: admin.username })
+
+    // Role tetap dikirim di body respons (buat FE)
     return { token, data: { id: admin.id, username: admin.username, role: admin.role } }
   }
 
   static apply(body: ApplyBody) {
-    // (opsional) logging/audit bisa ditambah di sini
     return AdminDeadlineRepository.applyByFilter(body)
   }
 
   static shift(body: ShiftBody) {
-    // normalisasi kecil: jika sesi ada tapi jenis tak ada → biarkan (akan lewati sesiRule di validation)
     return AdminDeadlineRepository.shiftByFilter({
       days: body.days,
       includeCompleted: body.includeCompleted,
@@ -38,5 +39,4 @@ export class AdminService {
       maxDate: body.maxDate ? new Date(body.maxDate) : undefined,
     })
   }
-
 }

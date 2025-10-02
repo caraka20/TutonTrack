@@ -1,3 +1,4 @@
+// tests/test-util.ts
 import { prismaClient } from "../src/config/database";
 import { generateToken } from "../src/utils/jwt";
 import bcrypt from "bcrypt";
@@ -110,11 +111,20 @@ export class AdminTest {
 /* ===================== COURSE ===================== */
 export class CourseTest {
   /** Nama unik */
-  static uniqueName() {
-    return `TEST-COURSE ${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  static uniqueName(base = "TEST-COURSE") {
+    return `${base} ${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
   }
 
-  /** Upsert course berdasarkan nama; return id & nama */
+  /** create unik (selalu tambahkan suffix agar tidak kena unique constraint) */
+  static async createUnique(name = "TEST-COURSE") {
+    const finalName = this.uniqueName(name);
+    return prismaClient.course.create({
+      data: { nama: finalName },
+      select: { id: true, nama: true },
+    });
+  }
+
+  /** upsert berdasarkan nama (pakai untuk kasus tertentu) */
   static async upsert(name = "Statistika UT") {
     return prismaClient.course.upsert({
       where: { nama: name },
@@ -124,47 +134,52 @@ export class CourseTest {
     });
   }
 
-  /** create unik (bukan upsert) */
-  static async createUnique(name = CourseTest.uniqueName()) {
-    return prismaClient.course.create({
-      data: { nama: name },
-      select: { id: true, nama: true },
-    });
-  }
-
-  /** Seed sebagian deadline untuk verifikasi copy ke TutonItem saat enroll */
-  static async seedDeadlines(courseId: number, base = new Date()) {
-    const d = (days: number, h = 23, m = 59) =>
+  /**
+   * Seed “deadline” untuk verifikasi:
+   * SEKARANG mengisi SessionWindow (GLOBAL), bukan CourseDeadline.
+   * Signature tetap sama → parameter `courseId` diabaikan untuk kompatibilitas.
+   */
+  static async seedDeadlines(_courseId: number, base = new Date()) {
+    const start = (days: number, h = 0, m = 0) =>
+      new Date(base.getFullYear(), base.getMonth(), base.getDate() + days, h, m, 0, 0);
+    const end = (days: number, h = 23, m = 59) =>
       new Date(base.getFullYear(), base.getMonth(), base.getDate() + days, h, m, 0, 0);
 
-    await prismaClient.courseDeadline.deleteMany({ where: { courseId } });
-    await prismaClient.courseDeadline.createMany({
-      data: [
-        { courseId, jenis: JenisTugas.DISKUSI, sesi: 1, deadlineAt: d(1) },
-        { courseId, jenis: JenisTugas.DISKUSI, sesi: 2, deadlineAt: d(2) },
-        { courseId, jenis: JenisTugas.ABSEN,   sesi: 1, deadlineAt: d(1, 12, 0) },
-        { courseId, jenis: JenisTugas.TUGAS,   sesi: 3, deadlineAt: d(5, 20, 0) },
-        { courseId, jenis: JenisTugas.QUIZ,    sesi: 2, deadlineAt: d(7, 9, 0) },
-      ],
-    });
+    const data: Array<{ jenis: JenisTugas; sesi: number; startAt: Date; endAt: Date }> = [
+      { jenis: "DISKUSI", sesi: 1, startAt: start(1, 0, 0), endAt: end(1) },
+      { jenis: "DISKUSI", sesi: 2, startAt: start(2, 0, 0), endAt: end(2) },
+      { jenis: "ABSEN",   sesi: 1, startAt: start(1, 8, 0), endAt: end(1, 12, 0) },
+      { jenis: "TUGAS",   sesi: 3, startAt: start(5, 9, 0), endAt: end(5, 20, 0) },
+      { jenis: "QUIZ",    sesi: 2, startAt: start(7, 8, 0), endAt: end(7, 9, 0) },
+    ];
+
+    for (const w of data) {
+      await prismaClient.sessionWindow.upsert({
+        where: { sesi_jenis: { sesi: w.sesi, jenis: w.jenis } }, // @@unique([sesi, jenis])
+        update: { startAt: w.startAt, endAt: w.endAt },
+        create: { sesi: w.sesi, jenis: w.jenis, startAt: w.startAt, endAt: w.endAt },
+      });
+    }
   }
 
   static async cleanup() {
-    await prismaClient.courseDeadline.deleteMany({});
-    // tidak menghapus course master; biarkan ada jika dipakai test lain
+    // hapus course yang prefiks TEST-COURSE; SessionWindow bersifat global → biarkan
+    await prismaClient.course.deleteMany({
+      where: { nama: { startsWith: "TEST-COURSE" } },
+    });
   }
 }
 
 /* ===================== ENROLLMENT (helper utk test) ===================== */
 export class EnrollmentTest {
-  /** Buat enrollment + beberapa TutonItem “kosong deadline” */
+  /** Buat enrollment + beberapa TutonItem “kosong deadline/openAt” */
   static async createWithItems(studentId: number, courseId: number) {
     const enr = await prismaClient.enrollment.create({
       data: { studentId, courseId },
       select: { id: true },
     });
 
-    // buat item dasar (tanpa deadline)
+    // buat item dasar
     const items = [
       { enrollmentId: enr.id, jenis: JenisTugas.DISKUSI, sesi: 1 },
       { enrollmentId: enr.id, jenis: JenisTugas.DISKUSI, sesi: 2 },
@@ -177,6 +192,7 @@ export class EnrollmentTest {
       data: items.map((it) => ({
         ...it,
         status: "BELUM",
+        openAt: null,
         deadlineAt: null,
       })),
       skipDuplicates: true,
@@ -188,9 +204,97 @@ export class EnrollmentTest {
   static async itemsOfEnrollment(enrollmentId: number) {
     return prismaClient.tutonItem.findMany({
       where: { enrollmentId },
-      select: { jenis: true, sesi: true, deadlineAt: true },
+      select: { jenis: true, sesi: true, openAt: true, deadlineAt: true },
       orderBy: [{ jenis: "asc" }, { sesi: "asc" }],
     });
+  }
+}
+
+/* ===================== DASHBOARD SEED ===================== */
+export class DashboardSeed {
+  /**
+   * Seed:
+   * - 2 course
+   * - 3 student
+   * - enroll & full items (8 DISKUSI + 8 ABSEN + 3 TUGAS) per enrollment
+   * - Tandai sebagian item SELESAI, sebagian overdue (deadlineAt lampau), sebagian due-soon (~H+1)
+   */
+  static async seed() {
+    // courses
+    const c1 = await CourseTest.createUnique("TEST-COURSE Dashboard Ekonomi");
+    const c2 = await CourseTest.createUnique("TEST-COURSE Dashboard Akuntansi");
+
+    // students
+    const sA = await StudentTest.create({ nama: "Student A" });
+    const sB = await StudentTest.create({ nama: "Student B" });
+    const sC = await StudentTest.create({ nama: "Student C" });
+
+    // enrollments
+    const eA1 = await prismaClient.enrollment.create({ data: { studentId: sA.id, courseId: c1.id } });
+    const eB1 = await prismaClient.enrollment.create({ data: { studentId: sB.id, courseId: c1.id } });
+    const eC2 = await prismaClient.enrollment.create({ data: { studentId: sC.id, courseId: c2.id } });
+
+    // helper generate full items for an enrollment
+    const genFull = async (enrollmentId: number) => {
+      const data: any[] = [];
+      for (let sesi = 1; sesi <= 8; sesi++) {
+        data.push({ enrollmentId, jenis: "DISKUSI", sesi, status: "BELUM", openAt: null, deadlineAt: null });
+        data.push({ enrollmentId, jenis: "ABSEN",   sesi, status: "BELUM", openAt: null, deadlineAt: null });
+      }
+      for (const sesi of [3, 5, 7]) {
+        data.push({ enrollmentId, jenis: "TUGAS", sesi, status: "BELUM", openAt: null, deadlineAt: null });
+      }
+      await prismaClient.tutonItem.createMany({ data, skipDuplicates: true });
+    };
+
+    await genFull(eA1.id);
+    await genFull(eB1.id);
+    await genFull(eC2.id);
+
+    // mark progress + deadlines:
+    const now = new Date();
+    const past = new Date(now.getTime() - 48 * 60 * 60 * 1000);   // 2 hari lalu (overdue)
+    const soon = new Date(now.getTime() + 20 * 60 * 60 * 1000);   // ~H+0.8 (due-soon)
+
+    // Student A (c1): sebagian selesai, sebagian overdue, sebagian soon
+    await prismaClient.tutonItem.updateMany({
+      where: { enrollmentId: eA1.id, jenis: "DISKUSI", sesi: { in: [1, 2, 3] } },
+      data: { status: "SELESAI", selesaiAt: now },
+    });
+    await prismaClient.tutonItem.updateMany({
+      where: { enrollmentId: eA1.id, jenis: "TUGAS", sesi: 3 },
+      data: { deadlineAt: past }, // overdue
+    });
+    await prismaClient.tutonItem.updateMany({
+      where: { enrollmentId: eA1.id, jenis: "ABSEN", sesi: 1 },
+      data: { deadlineAt: soon }, // due-soon
+    });
+
+    // Student B (c1): progress rendah & overdue lebih banyak
+    await prismaClient.tutonItem.updateMany({
+      where: { enrollmentId: eB1.id, jenis: "DISKUSI", sesi: { in: [1] } },
+      data: { status: "SELESAI", selesaiAt: now },
+    });
+    await prismaClient.tutonItem.updateMany({
+      where: { enrollmentId: eB1.id, jenis: "DISKUSI", sesi: { in: [4, 5] } },
+      data: { deadlineAt: past },
+    });
+    await prismaClient.tutonItem.updateMany({
+      where: { enrollmentId: eB1.id, jenis: "TUGAS", sesi: 5 },
+      data: { deadlineAt: soon },
+    });
+
+    // Student C (c2): tidak overdue, beberapa soon
+    await prismaClient.tutonItem.updateMany({
+      where: { enrollmentId: eC2.id, jenis: "DISKUSI", sesi: { in: [1, 2] } },
+      data: { status: "SELESAI", selesaiAt: now },
+    });
+    await prismaClient.tutonItem.updateMany({
+      where: { enrollmentId: eC2.id, jenis: "ABSEN", sesi: 2 },
+      data: { deadlineAt: soon },
+    });
+
+    return { courses: [c1, c2], students: [sA, sB, sC], enrollments: [eA1, eB1, eC2] };
   }
 }
 

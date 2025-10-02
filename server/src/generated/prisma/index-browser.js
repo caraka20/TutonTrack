@@ -146,12 +146,14 @@ exports.Prisma.CourseScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.CourseDeadlineScalarFieldEnum = {
+exports.Prisma.SessionWindowScalarFieldEnum = {
   id: 'id',
-  courseId: 'courseId',
-  jenis: 'jenis',
   sesi: 'sesi',
-  deadlineAt: 'deadlineAt'
+  jenis: 'jenis',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.EnrollmentScalarFieldEnum = {
@@ -170,6 +172,7 @@ exports.Prisma.TutonItemScalarFieldEnum = {
   status: 'status',
   nilai: 'nilai',
   deskripsi: 'deskripsi',
+  openAt: 'openAt',
   deadlineAt: 'deadlineAt',
   selesaiAt: 'selesaiAt',
   createdAt: 'createdAt',
@@ -258,7 +261,7 @@ exports.Prisma.ModelName = {
   Admin: 'Admin',
   Student: 'Student',
   Course: 'Course',
-  CourseDeadline: 'CourseDeadline',
+  SessionWindow: 'SessionWindow',
   Enrollment: 'Enrollment',
   TutonItem: 'TutonItem',
   Reminder: 'Reminder'

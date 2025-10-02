@@ -20,9 +20,7 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 export type Admin = $Result.DefaultSelection<Prisma.$AdminPayload>
 /**
  * Model Student
- * =============== Core ===============
- * *
- *  * Pendaftaran: nama, nim, noHp. Login: nim ATAU noHp (dua-duanya unik).
+ * 
  */
 export type Student = $Result.DefaultSelection<Prisma.$StudentPayload>
 /**
@@ -31,10 +29,10 @@ export type Student = $Result.DefaultSelection<Prisma.$StudentPayload>
  */
 export type Course = $Result.DefaultSelection<Prisma.$CoursePayload>
 /**
- * Model CourseDeadline
- * * Master deadline per (course, jenis, sesi) — di-set oleh OWNER/ADMIN
+ * Model SessionWindow
+ * 
  */
-export type CourseDeadline = $Result.DefaultSelection<Prisma.$CourseDeadlinePayload>
+export type SessionWindow = $Result.DefaultSelection<Prisma.$SessionWindowPayload>
 /**
  * Model Enrollment
  * 
@@ -42,22 +40,12 @@ export type CourseDeadline = $Result.DefaultSelection<Prisma.$CourseDeadlinePayl
 export type Enrollment = $Result.DefaultSelection<Prisma.$EnrollmentPayload>
 /**
  * Model TutonItem
- * *
- *  * Item per sesi:
- *  * - Diskusi 1..8
- *  * - Absen   1..8
- *  * - Tugas   3,5,7
- *  * - QUIZ    (opsional, sesi fleksibel)
+ * 
  */
 export type TutonItem = $Result.DefaultSelection<Prisma.$TutonItemPayload>
 /**
  * Model Reminder
- * =============== Reminder (manual + preferensi WEB) ===============
- * *
- *  * Dibuat manual oleh admin (source=ADMIN, createdByAdminId != null) atau oleh user/web (source=WEB, createdByAdminId null).
- *  * Admin menekan tombol “Kirim” → update status=SENT, sentAt=now().
- *  * Tambahan:
- *  *  - offsetMin & active: preferensi pengingat (WEB) per item (mis. H-1 = 1440 menit).
+ * 
  */
 export type Reminder = $Result.DefaultSelection<Prisma.$ReminderPayload>
 
@@ -289,14 +277,14 @@ export class PrismaClient<
   get course(): Prisma.CourseDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.courseDeadline`: Exposes CRUD operations for the **CourseDeadline** model.
+   * `prisma.sessionWindow`: Exposes CRUD operations for the **SessionWindow** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more CourseDeadlines
-    * const courseDeadlines = await prisma.courseDeadline.findMany()
+    * // Fetch zero or more SessionWindows
+    * const sessionWindows = await prisma.sessionWindow.findMany()
     * ```
     */
-  get courseDeadline(): Prisma.CourseDeadlineDelegate<ExtArgs, ClientOptions>;
+  get sessionWindow(): Prisma.SessionWindowDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.enrollment`: Exposes CRUD operations for the **Enrollment** model.
@@ -770,7 +758,7 @@ export namespace Prisma {
     Admin: 'Admin',
     Student: 'Student',
     Course: 'Course',
-    CourseDeadline: 'CourseDeadline',
+    SessionWindow: 'SessionWindow',
     Enrollment: 'Enrollment',
     TutonItem: 'TutonItem',
     Reminder: 'Reminder'
@@ -792,7 +780,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "admin" | "student" | "course" | "courseDeadline" | "enrollment" | "tutonItem" | "reminder"
+      modelProps: "admin" | "student" | "course" | "sessionWindow" | "enrollment" | "tutonItem" | "reminder"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -994,69 +982,69 @@ export namespace Prisma {
           }
         }
       }
-      CourseDeadline: {
-        payload: Prisma.$CourseDeadlinePayload<ExtArgs>
-        fields: Prisma.CourseDeadlineFieldRefs
+      SessionWindow: {
+        payload: Prisma.$SessionWindowPayload<ExtArgs>
+        fields: Prisma.SessionWindowFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.CourseDeadlineFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CourseDeadlinePayload> | null
+            args: Prisma.SessionWindowFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionWindowPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.CourseDeadlineFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CourseDeadlinePayload>
+            args: Prisma.SessionWindowFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionWindowPayload>
           }
           findFirst: {
-            args: Prisma.CourseDeadlineFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CourseDeadlinePayload> | null
+            args: Prisma.SessionWindowFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionWindowPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.CourseDeadlineFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CourseDeadlinePayload>
+            args: Prisma.SessionWindowFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionWindowPayload>
           }
           findMany: {
-            args: Prisma.CourseDeadlineFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CourseDeadlinePayload>[]
+            args: Prisma.SessionWindowFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionWindowPayload>[]
           }
           create: {
-            args: Prisma.CourseDeadlineCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CourseDeadlinePayload>
+            args: Prisma.SessionWindowCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionWindowPayload>
           }
           createMany: {
-            args: Prisma.CourseDeadlineCreateManyArgs<ExtArgs>
+            args: Prisma.SessionWindowCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           delete: {
-            args: Prisma.CourseDeadlineDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CourseDeadlinePayload>
+            args: Prisma.SessionWindowDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionWindowPayload>
           }
           update: {
-            args: Prisma.CourseDeadlineUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CourseDeadlinePayload>
+            args: Prisma.SessionWindowUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionWindowPayload>
           }
           deleteMany: {
-            args: Prisma.CourseDeadlineDeleteManyArgs<ExtArgs>
+            args: Prisma.SessionWindowDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.CourseDeadlineUpdateManyArgs<ExtArgs>
+            args: Prisma.SessionWindowUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           upsert: {
-            args: Prisma.CourseDeadlineUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CourseDeadlinePayload>
+            args: Prisma.SessionWindowUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionWindowPayload>
           }
           aggregate: {
-            args: Prisma.CourseDeadlineAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateCourseDeadline>
+            args: Prisma.SessionWindowAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSessionWindow>
           }
           groupBy: {
-            args: Prisma.CourseDeadlineGroupByArgs<ExtArgs>
-            result: $Utils.Optional<CourseDeadlineGroupByOutputType>[]
+            args: Prisma.SessionWindowGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SessionWindowGroupByOutputType>[]
           }
           count: {
-            args: Prisma.CourseDeadlineCountArgs<ExtArgs>
-            result: $Utils.Optional<CourseDeadlineCountAggregateOutputType> | number
+            args: Prisma.SessionWindowCountArgs<ExtArgs>
+            result: $Utils.Optional<SessionWindowCountAggregateOutputType> | number
           }
         }
       }
@@ -1357,7 +1345,7 @@ export namespace Prisma {
     admin?: AdminOmit
     student?: StudentOmit
     course?: CourseOmit
-    courseDeadline?: CourseDeadlineOmit
+    sessionWindow?: SessionWindowOmit
     enrollment?: EnrollmentOmit
     tutonItem?: TutonItemOmit
     reminder?: ReminderOmit
@@ -1504,12 +1492,10 @@ export namespace Prisma {
 
   export type CourseCountOutputType = {
     enrollments: number
-    courseDeadlines: number
   }
 
   export type CourseCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     enrollments?: boolean | CourseCountOutputTypeCountEnrollmentsArgs
-    courseDeadlines?: boolean | CourseCountOutputTypeCountCourseDeadlinesArgs
   }
 
   // Custom InputTypes
@@ -1528,13 +1514,6 @@ export namespace Prisma {
    */
   export type CourseCountOutputTypeCountEnrollmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EnrollmentWhereInput
-  }
-
-  /**
-   * CourseCountOutputType without action
-   */
-  export type CourseCountOutputTypeCountCourseDeadlinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CourseDeadlineWhereInput
   }
 
 
@@ -3806,7 +3785,6 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     enrollments?: boolean | Course$enrollmentsArgs<ExtArgs>
-    courseDeadlines?: boolean | Course$courseDeadlinesArgs<ExtArgs>
     _count?: boolean | CourseCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["course"]>
 
@@ -3822,7 +3800,6 @@ export namespace Prisma {
   export type CourseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nama" | "createdAt" | "updatedAt", ExtArgs["result"]["course"]>
   export type CourseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     enrollments?: boolean | Course$enrollmentsArgs<ExtArgs>
-    courseDeadlines?: boolean | Course$courseDeadlinesArgs<ExtArgs>
     _count?: boolean | CourseCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -3830,7 +3807,6 @@ export namespace Prisma {
     name: "Course"
     objects: {
       enrollments: Prisma.$EnrollmentPayload<ExtArgs>[]
-      courseDeadlines: Prisma.$CourseDeadlinePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -4178,7 +4154,6 @@ export namespace Prisma {
   export interface Prisma__CourseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     enrollments<T extends Course$enrollmentsArgs<ExtArgs> = {}>(args?: Subset<T, Course$enrollmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EnrollmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    courseDeadlines<T extends Course$courseDeadlinesArgs<ExtArgs> = {}>(args?: Subset<T, Course$courseDeadlinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CourseDeadlinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4579,30 +4554,6 @@ export namespace Prisma {
   }
 
   /**
-   * Course.courseDeadlines
-   */
-  export type Course$courseDeadlinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CourseDeadline
-     */
-    select?: CourseDeadlineSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CourseDeadline
-     */
-    omit?: CourseDeadlineOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CourseDeadlineInclude<ExtArgs> | null
-    where?: CourseDeadlineWhereInput
-    orderBy?: CourseDeadlineOrderByWithRelationInput | CourseDeadlineOrderByWithRelationInput[]
-    cursor?: CourseDeadlineWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: CourseDeadlineScalarFieldEnum | CourseDeadlineScalarFieldEnum[]
-  }
-
-  /**
    * Course without action
    */
   export type CourseDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4622,377 +4573,387 @@ export namespace Prisma {
 
 
   /**
-   * Model CourseDeadline
+   * Model SessionWindow
    */
 
-  export type AggregateCourseDeadline = {
-    _count: CourseDeadlineCountAggregateOutputType | null
-    _avg: CourseDeadlineAvgAggregateOutputType | null
-    _sum: CourseDeadlineSumAggregateOutputType | null
-    _min: CourseDeadlineMinAggregateOutputType | null
-    _max: CourseDeadlineMaxAggregateOutputType | null
+  export type AggregateSessionWindow = {
+    _count: SessionWindowCountAggregateOutputType | null
+    _avg: SessionWindowAvgAggregateOutputType | null
+    _sum: SessionWindowSumAggregateOutputType | null
+    _min: SessionWindowMinAggregateOutputType | null
+    _max: SessionWindowMaxAggregateOutputType | null
   }
 
-  export type CourseDeadlineAvgAggregateOutputType = {
+  export type SessionWindowAvgAggregateOutputType = {
     id: number | null
-    courseId: number | null
     sesi: number | null
   }
 
-  export type CourseDeadlineSumAggregateOutputType = {
+  export type SessionWindowSumAggregateOutputType = {
     id: number | null
-    courseId: number | null
     sesi: number | null
   }
 
-  export type CourseDeadlineMinAggregateOutputType = {
+  export type SessionWindowMinAggregateOutputType = {
     id: number | null
-    courseId: number | null
+    sesi: number | null
     jenis: $Enums.JenisTugas | null
-    sesi: number | null
-    deadlineAt: Date | null
+    startAt: Date | null
+    endAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
-  export type CourseDeadlineMaxAggregateOutputType = {
+  export type SessionWindowMaxAggregateOutputType = {
     id: number | null
-    courseId: number | null
-    jenis: $Enums.JenisTugas | null
     sesi: number | null
-    deadlineAt: Date | null
+    jenis: $Enums.JenisTugas | null
+    startAt: Date | null
+    endAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
-  export type CourseDeadlineCountAggregateOutputType = {
+  export type SessionWindowCountAggregateOutputType = {
     id: number
-    courseId: number
-    jenis: number
     sesi: number
-    deadlineAt: number
+    jenis: number
+    startAt: number
+    endAt: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
 
-  export type CourseDeadlineAvgAggregateInputType = {
+  export type SessionWindowAvgAggregateInputType = {
     id?: true
-    courseId?: true
     sesi?: true
   }
 
-  export type CourseDeadlineSumAggregateInputType = {
+  export type SessionWindowSumAggregateInputType = {
     id?: true
-    courseId?: true
     sesi?: true
   }
 
-  export type CourseDeadlineMinAggregateInputType = {
+  export type SessionWindowMinAggregateInputType = {
     id?: true
-    courseId?: true
+    sesi?: true
     jenis?: true
-    sesi?: true
-    deadlineAt?: true
+    startAt?: true
+    endAt?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
-  export type CourseDeadlineMaxAggregateInputType = {
+  export type SessionWindowMaxAggregateInputType = {
     id?: true
-    courseId?: true
-    jenis?: true
     sesi?: true
-    deadlineAt?: true
+    jenis?: true
+    startAt?: true
+    endAt?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
-  export type CourseDeadlineCountAggregateInputType = {
+  export type SessionWindowCountAggregateInputType = {
     id?: true
-    courseId?: true
-    jenis?: true
     sesi?: true
-    deadlineAt?: true
+    jenis?: true
+    startAt?: true
+    endAt?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
-  export type CourseDeadlineAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionWindowAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which CourseDeadline to aggregate.
+     * Filter which SessionWindow to aggregate.
      */
-    where?: CourseDeadlineWhereInput
+    where?: SessionWindowWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CourseDeadlines to fetch.
+     * Determine the order of SessionWindows to fetch.
      */
-    orderBy?: CourseDeadlineOrderByWithRelationInput | CourseDeadlineOrderByWithRelationInput[]
+    orderBy?: SessionWindowOrderByWithRelationInput | SessionWindowOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: CourseDeadlineWhereUniqueInput
+    cursor?: SessionWindowWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CourseDeadlines from the position of the cursor.
+     * Take `±n` SessionWindows from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CourseDeadlines.
+     * Skip the first `n` SessionWindows.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned CourseDeadlines
+     * Count returned SessionWindows
     **/
-    _count?: true | CourseDeadlineCountAggregateInputType
+    _count?: true | SessionWindowCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to average
     **/
-    _avg?: CourseDeadlineAvgAggregateInputType
+    _avg?: SessionWindowAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to sum
     **/
-    _sum?: CourseDeadlineSumAggregateInputType
+    _sum?: SessionWindowSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: CourseDeadlineMinAggregateInputType
+    _min?: SessionWindowMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: CourseDeadlineMaxAggregateInputType
+    _max?: SessionWindowMaxAggregateInputType
   }
 
-  export type GetCourseDeadlineAggregateType<T extends CourseDeadlineAggregateArgs> = {
-        [P in keyof T & keyof AggregateCourseDeadline]: P extends '_count' | 'count'
+  export type GetSessionWindowAggregateType<T extends SessionWindowAggregateArgs> = {
+        [P in keyof T & keyof AggregateSessionWindow]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateCourseDeadline[P]>
-      : GetScalarType<T[P], AggregateCourseDeadline[P]>
+        : GetScalarType<T[P], AggregateSessionWindow[P]>
+      : GetScalarType<T[P], AggregateSessionWindow[P]>
   }
 
 
 
 
-  export type CourseDeadlineGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CourseDeadlineWhereInput
-    orderBy?: CourseDeadlineOrderByWithAggregationInput | CourseDeadlineOrderByWithAggregationInput[]
-    by: CourseDeadlineScalarFieldEnum[] | CourseDeadlineScalarFieldEnum
-    having?: CourseDeadlineScalarWhereWithAggregatesInput
+  export type SessionWindowGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionWindowWhereInput
+    orderBy?: SessionWindowOrderByWithAggregationInput | SessionWindowOrderByWithAggregationInput[]
+    by: SessionWindowScalarFieldEnum[] | SessionWindowScalarFieldEnum
+    having?: SessionWindowScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: CourseDeadlineCountAggregateInputType | true
-    _avg?: CourseDeadlineAvgAggregateInputType
-    _sum?: CourseDeadlineSumAggregateInputType
-    _min?: CourseDeadlineMinAggregateInputType
-    _max?: CourseDeadlineMaxAggregateInputType
+    _count?: SessionWindowCountAggregateInputType | true
+    _avg?: SessionWindowAvgAggregateInputType
+    _sum?: SessionWindowSumAggregateInputType
+    _min?: SessionWindowMinAggregateInputType
+    _max?: SessionWindowMaxAggregateInputType
   }
 
-  export type CourseDeadlineGroupByOutputType = {
+  export type SessionWindowGroupByOutputType = {
     id: number
-    courseId: number
-    jenis: $Enums.JenisTugas
     sesi: number
-    deadlineAt: Date | null
-    _count: CourseDeadlineCountAggregateOutputType | null
-    _avg: CourseDeadlineAvgAggregateOutputType | null
-    _sum: CourseDeadlineSumAggregateOutputType | null
-    _min: CourseDeadlineMinAggregateOutputType | null
-    _max: CourseDeadlineMaxAggregateOutputType | null
+    jenis: $Enums.JenisTugas
+    startAt: Date
+    endAt: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: SessionWindowCountAggregateOutputType | null
+    _avg: SessionWindowAvgAggregateOutputType | null
+    _sum: SessionWindowSumAggregateOutputType | null
+    _min: SessionWindowMinAggregateOutputType | null
+    _max: SessionWindowMaxAggregateOutputType | null
   }
 
-  type GetCourseDeadlineGroupByPayload<T extends CourseDeadlineGroupByArgs> = Prisma.PrismaPromise<
+  type GetSessionWindowGroupByPayload<T extends SessionWindowGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<CourseDeadlineGroupByOutputType, T['by']> &
+      PickEnumerable<SessionWindowGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof CourseDeadlineGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof SessionWindowGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], CourseDeadlineGroupByOutputType[P]>
-            : GetScalarType<T[P], CourseDeadlineGroupByOutputType[P]>
+              : GetScalarType<T[P], SessionWindowGroupByOutputType[P]>
+            : GetScalarType<T[P], SessionWindowGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type CourseDeadlineSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type SessionWindowSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    courseId?: boolean
-    jenis?: boolean
     sesi?: boolean
-    deadlineAt?: boolean
-    course?: boolean | CourseDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["courseDeadline"]>
+    jenis?: boolean
+    startAt?: boolean
+    endAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["sessionWindow"]>
 
 
 
-  export type CourseDeadlineSelectScalar = {
+  export type SessionWindowSelectScalar = {
     id?: boolean
-    courseId?: boolean
-    jenis?: boolean
     sesi?: boolean
-    deadlineAt?: boolean
+    jenis?: boolean
+    startAt?: boolean
+    endAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type CourseDeadlineOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "courseId" | "jenis" | "sesi" | "deadlineAt", ExtArgs["result"]["courseDeadline"]>
-  export type CourseDeadlineInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    course?: boolean | CourseDefaultArgs<ExtArgs>
-  }
+  export type SessionWindowOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sesi" | "jenis" | "startAt" | "endAt" | "createdAt" | "updatedAt", ExtArgs["result"]["sessionWindow"]>
 
-  export type $CourseDeadlinePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "CourseDeadline"
-    objects: {
-      course: Prisma.$CoursePayload<ExtArgs>
-    }
+  export type $SessionWindowPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SessionWindow"
+    objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      courseId: number
-      jenis: $Enums.JenisTugas
       sesi: number
-      deadlineAt: Date | null
-    }, ExtArgs["result"]["courseDeadline"]>
+      jenis: $Enums.JenisTugas
+      startAt: Date
+      endAt: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["sessionWindow"]>
     composites: {}
   }
 
-  type CourseDeadlineGetPayload<S extends boolean | null | undefined | CourseDeadlineDefaultArgs> = $Result.GetResult<Prisma.$CourseDeadlinePayload, S>
+  type SessionWindowGetPayload<S extends boolean | null | undefined | SessionWindowDefaultArgs> = $Result.GetResult<Prisma.$SessionWindowPayload, S>
 
-  type CourseDeadlineCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<CourseDeadlineFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: CourseDeadlineCountAggregateInputType | true
+  type SessionWindowCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SessionWindowFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SessionWindowCountAggregateInputType | true
     }
 
-  export interface CourseDeadlineDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CourseDeadline'], meta: { name: 'CourseDeadline' } }
+  export interface SessionWindowDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SessionWindow'], meta: { name: 'SessionWindow' } }
     /**
-     * Find zero or one CourseDeadline that matches the filter.
-     * @param {CourseDeadlineFindUniqueArgs} args - Arguments to find a CourseDeadline
+     * Find zero or one SessionWindow that matches the filter.
+     * @param {SessionWindowFindUniqueArgs} args - Arguments to find a SessionWindow
      * @example
-     * // Get one CourseDeadline
-     * const courseDeadline = await prisma.courseDeadline.findUnique({
+     * // Get one SessionWindow
+     * const sessionWindow = await prisma.sessionWindow.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends CourseDeadlineFindUniqueArgs>(args: SelectSubset<T, CourseDeadlineFindUniqueArgs<ExtArgs>>): Prisma__CourseDeadlineClient<$Result.GetResult<Prisma.$CourseDeadlinePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends SessionWindowFindUniqueArgs>(args: SelectSubset<T, SessionWindowFindUniqueArgs<ExtArgs>>): Prisma__SessionWindowClient<$Result.GetResult<Prisma.$SessionWindowPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one CourseDeadline that matches the filter or throw an error with `error.code='P2025'`
+     * Find one SessionWindow that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {CourseDeadlineFindUniqueOrThrowArgs} args - Arguments to find a CourseDeadline
+     * @param {SessionWindowFindUniqueOrThrowArgs} args - Arguments to find a SessionWindow
      * @example
-     * // Get one CourseDeadline
-     * const courseDeadline = await prisma.courseDeadline.findUniqueOrThrow({
+     * // Get one SessionWindow
+     * const sessionWindow = await prisma.sessionWindow.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends CourseDeadlineFindUniqueOrThrowArgs>(args: SelectSubset<T, CourseDeadlineFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CourseDeadlineClient<$Result.GetResult<Prisma.$CourseDeadlinePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends SessionWindowFindUniqueOrThrowArgs>(args: SelectSubset<T, SessionWindowFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SessionWindowClient<$Result.GetResult<Prisma.$SessionWindowPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first CourseDeadline that matches the filter.
+     * Find the first SessionWindow that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CourseDeadlineFindFirstArgs} args - Arguments to find a CourseDeadline
+     * @param {SessionWindowFindFirstArgs} args - Arguments to find a SessionWindow
      * @example
-     * // Get one CourseDeadline
-     * const courseDeadline = await prisma.courseDeadline.findFirst({
+     * // Get one SessionWindow
+     * const sessionWindow = await prisma.sessionWindow.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends CourseDeadlineFindFirstArgs>(args?: SelectSubset<T, CourseDeadlineFindFirstArgs<ExtArgs>>): Prisma__CourseDeadlineClient<$Result.GetResult<Prisma.$CourseDeadlinePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends SessionWindowFindFirstArgs>(args?: SelectSubset<T, SessionWindowFindFirstArgs<ExtArgs>>): Prisma__SessionWindowClient<$Result.GetResult<Prisma.$SessionWindowPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first CourseDeadline that matches the filter or
+     * Find the first SessionWindow that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CourseDeadlineFindFirstOrThrowArgs} args - Arguments to find a CourseDeadline
+     * @param {SessionWindowFindFirstOrThrowArgs} args - Arguments to find a SessionWindow
      * @example
-     * // Get one CourseDeadline
-     * const courseDeadline = await prisma.courseDeadline.findFirstOrThrow({
+     * // Get one SessionWindow
+     * const sessionWindow = await prisma.sessionWindow.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends CourseDeadlineFindFirstOrThrowArgs>(args?: SelectSubset<T, CourseDeadlineFindFirstOrThrowArgs<ExtArgs>>): Prisma__CourseDeadlineClient<$Result.GetResult<Prisma.$CourseDeadlinePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends SessionWindowFindFirstOrThrowArgs>(args?: SelectSubset<T, SessionWindowFindFirstOrThrowArgs<ExtArgs>>): Prisma__SessionWindowClient<$Result.GetResult<Prisma.$SessionWindowPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more CourseDeadlines that matches the filter.
+     * Find zero or more SessionWindows that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CourseDeadlineFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {SessionWindowFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all CourseDeadlines
-     * const courseDeadlines = await prisma.courseDeadline.findMany()
+     * // Get all SessionWindows
+     * const sessionWindows = await prisma.sessionWindow.findMany()
      * 
-     * // Get first 10 CourseDeadlines
-     * const courseDeadlines = await prisma.courseDeadline.findMany({ take: 10 })
+     * // Get first 10 SessionWindows
+     * const sessionWindows = await prisma.sessionWindow.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const courseDeadlineWithIdOnly = await prisma.courseDeadline.findMany({ select: { id: true } })
+     * const sessionWindowWithIdOnly = await prisma.sessionWindow.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends CourseDeadlineFindManyArgs>(args?: SelectSubset<T, CourseDeadlineFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CourseDeadlinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends SessionWindowFindManyArgs>(args?: SelectSubset<T, SessionWindowFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionWindowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a CourseDeadline.
-     * @param {CourseDeadlineCreateArgs} args - Arguments to create a CourseDeadline.
+     * Create a SessionWindow.
+     * @param {SessionWindowCreateArgs} args - Arguments to create a SessionWindow.
      * @example
-     * // Create one CourseDeadline
-     * const CourseDeadline = await prisma.courseDeadline.create({
+     * // Create one SessionWindow
+     * const SessionWindow = await prisma.sessionWindow.create({
      *   data: {
-     *     // ... data to create a CourseDeadline
+     *     // ... data to create a SessionWindow
      *   }
      * })
      * 
      */
-    create<T extends CourseDeadlineCreateArgs>(args: SelectSubset<T, CourseDeadlineCreateArgs<ExtArgs>>): Prisma__CourseDeadlineClient<$Result.GetResult<Prisma.$CourseDeadlinePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends SessionWindowCreateArgs>(args: SelectSubset<T, SessionWindowCreateArgs<ExtArgs>>): Prisma__SessionWindowClient<$Result.GetResult<Prisma.$SessionWindowPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many CourseDeadlines.
-     * @param {CourseDeadlineCreateManyArgs} args - Arguments to create many CourseDeadlines.
+     * Create many SessionWindows.
+     * @param {SessionWindowCreateManyArgs} args - Arguments to create many SessionWindows.
      * @example
-     * // Create many CourseDeadlines
-     * const courseDeadline = await prisma.courseDeadline.createMany({
+     * // Create many SessionWindows
+     * const sessionWindow = await prisma.sessionWindow.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends CourseDeadlineCreateManyArgs>(args?: SelectSubset<T, CourseDeadlineCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends SessionWindowCreateManyArgs>(args?: SelectSubset<T, SessionWindowCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Delete a CourseDeadline.
-     * @param {CourseDeadlineDeleteArgs} args - Arguments to delete one CourseDeadline.
+     * Delete a SessionWindow.
+     * @param {SessionWindowDeleteArgs} args - Arguments to delete one SessionWindow.
      * @example
-     * // Delete one CourseDeadline
-     * const CourseDeadline = await prisma.courseDeadline.delete({
+     * // Delete one SessionWindow
+     * const SessionWindow = await prisma.sessionWindow.delete({
      *   where: {
-     *     // ... filter to delete one CourseDeadline
+     *     // ... filter to delete one SessionWindow
      *   }
      * })
      * 
      */
-    delete<T extends CourseDeadlineDeleteArgs>(args: SelectSubset<T, CourseDeadlineDeleteArgs<ExtArgs>>): Prisma__CourseDeadlineClient<$Result.GetResult<Prisma.$CourseDeadlinePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends SessionWindowDeleteArgs>(args: SelectSubset<T, SessionWindowDeleteArgs<ExtArgs>>): Prisma__SessionWindowClient<$Result.GetResult<Prisma.$SessionWindowPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one CourseDeadline.
-     * @param {CourseDeadlineUpdateArgs} args - Arguments to update one CourseDeadline.
+     * Update one SessionWindow.
+     * @param {SessionWindowUpdateArgs} args - Arguments to update one SessionWindow.
      * @example
-     * // Update one CourseDeadline
-     * const courseDeadline = await prisma.courseDeadline.update({
+     * // Update one SessionWindow
+     * const sessionWindow = await prisma.sessionWindow.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -5002,30 +4963,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends CourseDeadlineUpdateArgs>(args: SelectSubset<T, CourseDeadlineUpdateArgs<ExtArgs>>): Prisma__CourseDeadlineClient<$Result.GetResult<Prisma.$CourseDeadlinePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends SessionWindowUpdateArgs>(args: SelectSubset<T, SessionWindowUpdateArgs<ExtArgs>>): Prisma__SessionWindowClient<$Result.GetResult<Prisma.$SessionWindowPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more CourseDeadlines.
-     * @param {CourseDeadlineDeleteManyArgs} args - Arguments to filter CourseDeadlines to delete.
+     * Delete zero or more SessionWindows.
+     * @param {SessionWindowDeleteManyArgs} args - Arguments to filter SessionWindows to delete.
      * @example
-     * // Delete a few CourseDeadlines
-     * const { count } = await prisma.courseDeadline.deleteMany({
+     * // Delete a few SessionWindows
+     * const { count } = await prisma.sessionWindow.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends CourseDeadlineDeleteManyArgs>(args?: SelectSubset<T, CourseDeadlineDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends SessionWindowDeleteManyArgs>(args?: SelectSubset<T, SessionWindowDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more CourseDeadlines.
+     * Update zero or more SessionWindows.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CourseDeadlineUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {SessionWindowUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many CourseDeadlines
-     * const courseDeadline = await prisma.courseDeadline.updateMany({
+     * // Update many SessionWindows
+     * const sessionWindow = await prisma.sessionWindow.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -5035,56 +4996,56 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends CourseDeadlineUpdateManyArgs>(args: SelectSubset<T, CourseDeadlineUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends SessionWindowUpdateManyArgs>(args: SelectSubset<T, SessionWindowUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create or update one CourseDeadline.
-     * @param {CourseDeadlineUpsertArgs} args - Arguments to update or create a CourseDeadline.
+     * Create or update one SessionWindow.
+     * @param {SessionWindowUpsertArgs} args - Arguments to update or create a SessionWindow.
      * @example
-     * // Update or create a CourseDeadline
-     * const courseDeadline = await prisma.courseDeadline.upsert({
+     * // Update or create a SessionWindow
+     * const sessionWindow = await prisma.sessionWindow.upsert({
      *   create: {
-     *     // ... data to create a CourseDeadline
+     *     // ... data to create a SessionWindow
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the CourseDeadline we want to update
+     *     // ... the filter for the SessionWindow we want to update
      *   }
      * })
      */
-    upsert<T extends CourseDeadlineUpsertArgs>(args: SelectSubset<T, CourseDeadlineUpsertArgs<ExtArgs>>): Prisma__CourseDeadlineClient<$Result.GetResult<Prisma.$CourseDeadlinePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends SessionWindowUpsertArgs>(args: SelectSubset<T, SessionWindowUpsertArgs<ExtArgs>>): Prisma__SessionWindowClient<$Result.GetResult<Prisma.$SessionWindowPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of CourseDeadlines.
+     * Count the number of SessionWindows.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CourseDeadlineCountArgs} args - Arguments to filter CourseDeadlines to count.
+     * @param {SessionWindowCountArgs} args - Arguments to filter SessionWindows to count.
      * @example
-     * // Count the number of CourseDeadlines
-     * const count = await prisma.courseDeadline.count({
+     * // Count the number of SessionWindows
+     * const count = await prisma.sessionWindow.count({
      *   where: {
-     *     // ... the filter for the CourseDeadlines we want to count
+     *     // ... the filter for the SessionWindows we want to count
      *   }
      * })
     **/
-    count<T extends CourseDeadlineCountArgs>(
-      args?: Subset<T, CourseDeadlineCountArgs>,
+    count<T extends SessionWindowCountArgs>(
+      args?: Subset<T, SessionWindowCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], CourseDeadlineCountAggregateOutputType>
+          : GetScalarType<T['select'], SessionWindowCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a CourseDeadline.
+     * Allows you to perform aggregations operations on a SessionWindow.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CourseDeadlineAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {SessionWindowAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -5104,13 +5065,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends CourseDeadlineAggregateArgs>(args: Subset<T, CourseDeadlineAggregateArgs>): Prisma.PrismaPromise<GetCourseDeadlineAggregateType<T>>
+    aggregate<T extends SessionWindowAggregateArgs>(args: Subset<T, SessionWindowAggregateArgs>): Prisma.PrismaPromise<GetSessionWindowAggregateType<T>>
 
     /**
-     * Group by CourseDeadline.
+     * Group by SessionWindow.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CourseDeadlineGroupByArgs} args - Group by arguments.
+     * @param {SessionWindowGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -5125,14 +5086,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends CourseDeadlineGroupByArgs,
+      T extends SessionWindowGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: CourseDeadlineGroupByArgs['orderBy'] }
-        : { orderBy?: CourseDeadlineGroupByArgs['orderBy'] },
+        ? { orderBy: SessionWindowGroupByArgs['orderBy'] }
+        : { orderBy?: SessionWindowGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -5181,22 +5142,21 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, CourseDeadlineGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCourseDeadlineGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, SessionWindowGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSessionWindowGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the CourseDeadline model
+   * Fields of the SessionWindow model
    */
-  readonly fields: CourseDeadlineFieldRefs;
+  readonly fields: SessionWindowFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for CourseDeadline.
+   * The delegate class that acts as a "Promise-like" for SessionWindow.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__CourseDeadlineClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__SessionWindowClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    course<T extends CourseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CourseDefaultArgs<ExtArgs>>): Prisma__CourseClient<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5223,372 +5183,334 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the CourseDeadline model
+   * Fields of the SessionWindow model
    */
-  interface CourseDeadlineFieldRefs {
-    readonly id: FieldRef<"CourseDeadline", 'Int'>
-    readonly courseId: FieldRef<"CourseDeadline", 'Int'>
-    readonly jenis: FieldRef<"CourseDeadline", 'JenisTugas'>
-    readonly sesi: FieldRef<"CourseDeadline", 'Int'>
-    readonly deadlineAt: FieldRef<"CourseDeadline", 'DateTime'>
+  interface SessionWindowFieldRefs {
+    readonly id: FieldRef<"SessionWindow", 'Int'>
+    readonly sesi: FieldRef<"SessionWindow", 'Int'>
+    readonly jenis: FieldRef<"SessionWindow", 'JenisTugas'>
+    readonly startAt: FieldRef<"SessionWindow", 'DateTime'>
+    readonly endAt: FieldRef<"SessionWindow", 'DateTime'>
+    readonly createdAt: FieldRef<"SessionWindow", 'DateTime'>
+    readonly updatedAt: FieldRef<"SessionWindow", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * CourseDeadline findUnique
+   * SessionWindow findUnique
    */
-  export type CourseDeadlineFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionWindowFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CourseDeadline
+     * Select specific fields to fetch from the SessionWindow
      */
-    select?: CourseDeadlineSelect<ExtArgs> | null
+    select?: SessionWindowSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CourseDeadline
+     * Omit specific fields from the SessionWindow
      */
-    omit?: CourseDeadlineOmit<ExtArgs> | null
+    omit?: SessionWindowOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * Filter, which SessionWindow to fetch.
      */
-    include?: CourseDeadlineInclude<ExtArgs> | null
-    /**
-     * Filter, which CourseDeadline to fetch.
-     */
-    where: CourseDeadlineWhereUniqueInput
+    where: SessionWindowWhereUniqueInput
   }
 
   /**
-   * CourseDeadline findUniqueOrThrow
+   * SessionWindow findUniqueOrThrow
    */
-  export type CourseDeadlineFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionWindowFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CourseDeadline
+     * Select specific fields to fetch from the SessionWindow
      */
-    select?: CourseDeadlineSelect<ExtArgs> | null
+    select?: SessionWindowSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CourseDeadline
+     * Omit specific fields from the SessionWindow
      */
-    omit?: CourseDeadlineOmit<ExtArgs> | null
+    omit?: SessionWindowOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * Filter, which SessionWindow to fetch.
      */
-    include?: CourseDeadlineInclude<ExtArgs> | null
-    /**
-     * Filter, which CourseDeadline to fetch.
-     */
-    where: CourseDeadlineWhereUniqueInput
+    where: SessionWindowWhereUniqueInput
   }
 
   /**
-   * CourseDeadline findFirst
+   * SessionWindow findFirst
    */
-  export type CourseDeadlineFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionWindowFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CourseDeadline
+     * Select specific fields to fetch from the SessionWindow
      */
-    select?: CourseDeadlineSelect<ExtArgs> | null
+    select?: SessionWindowSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CourseDeadline
+     * Omit specific fields from the SessionWindow
      */
-    omit?: CourseDeadlineOmit<ExtArgs> | null
+    omit?: SessionWindowOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * Filter, which SessionWindow to fetch.
      */
-    include?: CourseDeadlineInclude<ExtArgs> | null
-    /**
-     * Filter, which CourseDeadline to fetch.
-     */
-    where?: CourseDeadlineWhereInput
+    where?: SessionWindowWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CourseDeadlines to fetch.
+     * Determine the order of SessionWindows to fetch.
      */
-    orderBy?: CourseDeadlineOrderByWithRelationInput | CourseDeadlineOrderByWithRelationInput[]
+    orderBy?: SessionWindowOrderByWithRelationInput | SessionWindowOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for CourseDeadlines.
+     * Sets the position for searching for SessionWindows.
      */
-    cursor?: CourseDeadlineWhereUniqueInput
+    cursor?: SessionWindowWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CourseDeadlines from the position of the cursor.
+     * Take `±n` SessionWindows from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CourseDeadlines.
+     * Skip the first `n` SessionWindows.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of CourseDeadlines.
+     * Filter by unique combinations of SessionWindows.
      */
-    distinct?: CourseDeadlineScalarFieldEnum | CourseDeadlineScalarFieldEnum[]
+    distinct?: SessionWindowScalarFieldEnum | SessionWindowScalarFieldEnum[]
   }
 
   /**
-   * CourseDeadline findFirstOrThrow
+   * SessionWindow findFirstOrThrow
    */
-  export type CourseDeadlineFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionWindowFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CourseDeadline
+     * Select specific fields to fetch from the SessionWindow
      */
-    select?: CourseDeadlineSelect<ExtArgs> | null
+    select?: SessionWindowSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CourseDeadline
+     * Omit specific fields from the SessionWindow
      */
-    omit?: CourseDeadlineOmit<ExtArgs> | null
+    omit?: SessionWindowOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * Filter, which SessionWindow to fetch.
      */
-    include?: CourseDeadlineInclude<ExtArgs> | null
-    /**
-     * Filter, which CourseDeadline to fetch.
-     */
-    where?: CourseDeadlineWhereInput
+    where?: SessionWindowWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CourseDeadlines to fetch.
+     * Determine the order of SessionWindows to fetch.
      */
-    orderBy?: CourseDeadlineOrderByWithRelationInput | CourseDeadlineOrderByWithRelationInput[]
+    orderBy?: SessionWindowOrderByWithRelationInput | SessionWindowOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for CourseDeadlines.
+     * Sets the position for searching for SessionWindows.
      */
-    cursor?: CourseDeadlineWhereUniqueInput
+    cursor?: SessionWindowWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CourseDeadlines from the position of the cursor.
+     * Take `±n` SessionWindows from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CourseDeadlines.
+     * Skip the first `n` SessionWindows.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of CourseDeadlines.
+     * Filter by unique combinations of SessionWindows.
      */
-    distinct?: CourseDeadlineScalarFieldEnum | CourseDeadlineScalarFieldEnum[]
+    distinct?: SessionWindowScalarFieldEnum | SessionWindowScalarFieldEnum[]
   }
 
   /**
-   * CourseDeadline findMany
+   * SessionWindow findMany
    */
-  export type CourseDeadlineFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionWindowFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CourseDeadline
+     * Select specific fields to fetch from the SessionWindow
      */
-    select?: CourseDeadlineSelect<ExtArgs> | null
+    select?: SessionWindowSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CourseDeadline
+     * Omit specific fields from the SessionWindow
      */
-    omit?: CourseDeadlineOmit<ExtArgs> | null
+    omit?: SessionWindowOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * Filter, which SessionWindows to fetch.
      */
-    include?: CourseDeadlineInclude<ExtArgs> | null
-    /**
-     * Filter, which CourseDeadlines to fetch.
-     */
-    where?: CourseDeadlineWhereInput
+    where?: SessionWindowWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CourseDeadlines to fetch.
+     * Determine the order of SessionWindows to fetch.
      */
-    orderBy?: CourseDeadlineOrderByWithRelationInput | CourseDeadlineOrderByWithRelationInput[]
+    orderBy?: SessionWindowOrderByWithRelationInput | SessionWindowOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing CourseDeadlines.
+     * Sets the position for listing SessionWindows.
      */
-    cursor?: CourseDeadlineWhereUniqueInput
+    cursor?: SessionWindowWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CourseDeadlines from the position of the cursor.
+     * Take `±n` SessionWindows from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CourseDeadlines.
+     * Skip the first `n` SessionWindows.
      */
     skip?: number
-    distinct?: CourseDeadlineScalarFieldEnum | CourseDeadlineScalarFieldEnum[]
+    distinct?: SessionWindowScalarFieldEnum | SessionWindowScalarFieldEnum[]
   }
 
   /**
-   * CourseDeadline create
+   * SessionWindow create
    */
-  export type CourseDeadlineCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionWindowCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CourseDeadline
+     * Select specific fields to fetch from the SessionWindow
      */
-    select?: CourseDeadlineSelect<ExtArgs> | null
+    select?: SessionWindowSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CourseDeadline
+     * Omit specific fields from the SessionWindow
      */
-    omit?: CourseDeadlineOmit<ExtArgs> | null
+    omit?: SessionWindowOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * The data needed to create a SessionWindow.
      */
-    include?: CourseDeadlineInclude<ExtArgs> | null
-    /**
-     * The data needed to create a CourseDeadline.
-     */
-    data: XOR<CourseDeadlineCreateInput, CourseDeadlineUncheckedCreateInput>
+    data: XOR<SessionWindowCreateInput, SessionWindowUncheckedCreateInput>
   }
 
   /**
-   * CourseDeadline createMany
+   * SessionWindow createMany
    */
-  export type CourseDeadlineCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionWindowCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many CourseDeadlines.
+     * The data used to create many SessionWindows.
      */
-    data: CourseDeadlineCreateManyInput | CourseDeadlineCreateManyInput[]
+    data: SessionWindowCreateManyInput | SessionWindowCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * CourseDeadline update
+   * SessionWindow update
    */
-  export type CourseDeadlineUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionWindowUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CourseDeadline
+     * Select specific fields to fetch from the SessionWindow
      */
-    select?: CourseDeadlineSelect<ExtArgs> | null
+    select?: SessionWindowSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CourseDeadline
+     * Omit specific fields from the SessionWindow
      */
-    omit?: CourseDeadlineOmit<ExtArgs> | null
+    omit?: SessionWindowOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * The data needed to update a SessionWindow.
      */
-    include?: CourseDeadlineInclude<ExtArgs> | null
+    data: XOR<SessionWindowUpdateInput, SessionWindowUncheckedUpdateInput>
     /**
-     * The data needed to update a CourseDeadline.
+     * Choose, which SessionWindow to update.
      */
-    data: XOR<CourseDeadlineUpdateInput, CourseDeadlineUncheckedUpdateInput>
-    /**
-     * Choose, which CourseDeadline to update.
-     */
-    where: CourseDeadlineWhereUniqueInput
+    where: SessionWindowWhereUniqueInput
   }
 
   /**
-   * CourseDeadline updateMany
+   * SessionWindow updateMany
    */
-  export type CourseDeadlineUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionWindowUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update CourseDeadlines.
+     * The data used to update SessionWindows.
      */
-    data: XOR<CourseDeadlineUpdateManyMutationInput, CourseDeadlineUncheckedUpdateManyInput>
+    data: XOR<SessionWindowUpdateManyMutationInput, SessionWindowUncheckedUpdateManyInput>
     /**
-     * Filter which CourseDeadlines to update
+     * Filter which SessionWindows to update
      */
-    where?: CourseDeadlineWhereInput
+    where?: SessionWindowWhereInput
     /**
-     * Limit how many CourseDeadlines to update.
+     * Limit how many SessionWindows to update.
      */
     limit?: number
   }
 
   /**
-   * CourseDeadline upsert
+   * SessionWindow upsert
    */
-  export type CourseDeadlineUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionWindowUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CourseDeadline
+     * Select specific fields to fetch from the SessionWindow
      */
-    select?: CourseDeadlineSelect<ExtArgs> | null
+    select?: SessionWindowSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CourseDeadline
+     * Omit specific fields from the SessionWindow
      */
-    omit?: CourseDeadlineOmit<ExtArgs> | null
+    omit?: SessionWindowOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * The filter to search for the SessionWindow to update in case it exists.
      */
-    include?: CourseDeadlineInclude<ExtArgs> | null
+    where: SessionWindowWhereUniqueInput
     /**
-     * The filter to search for the CourseDeadline to update in case it exists.
+     * In case the SessionWindow found by the `where` argument doesn't exist, create a new SessionWindow with this data.
      */
-    where: CourseDeadlineWhereUniqueInput
+    create: XOR<SessionWindowCreateInput, SessionWindowUncheckedCreateInput>
     /**
-     * In case the CourseDeadline found by the `where` argument doesn't exist, create a new CourseDeadline with this data.
+     * In case the SessionWindow was found with the provided `where` argument, update it with this data.
      */
-    create: XOR<CourseDeadlineCreateInput, CourseDeadlineUncheckedCreateInput>
-    /**
-     * In case the CourseDeadline was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<CourseDeadlineUpdateInput, CourseDeadlineUncheckedUpdateInput>
+    update: XOR<SessionWindowUpdateInput, SessionWindowUncheckedUpdateInput>
   }
 
   /**
-   * CourseDeadline delete
+   * SessionWindow delete
    */
-  export type CourseDeadlineDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionWindowDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CourseDeadline
+     * Select specific fields to fetch from the SessionWindow
      */
-    select?: CourseDeadlineSelect<ExtArgs> | null
+    select?: SessionWindowSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CourseDeadline
+     * Omit specific fields from the SessionWindow
      */
-    omit?: CourseDeadlineOmit<ExtArgs> | null
+    omit?: SessionWindowOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * Filter which SessionWindow to delete.
      */
-    include?: CourseDeadlineInclude<ExtArgs> | null
-    /**
-     * Filter which CourseDeadline to delete.
-     */
-    where: CourseDeadlineWhereUniqueInput
+    where: SessionWindowWhereUniqueInput
   }
 
   /**
-   * CourseDeadline deleteMany
+   * SessionWindow deleteMany
    */
-  export type CourseDeadlineDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionWindowDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which CourseDeadlines to delete
+     * Filter which SessionWindows to delete
      */
-    where?: CourseDeadlineWhereInput
+    where?: SessionWindowWhereInput
     /**
-     * Limit how many CourseDeadlines to delete.
+     * Limit how many SessionWindows to delete.
      */
     limit?: number
   }
 
   /**
-   * CourseDeadline without action
+   * SessionWindow without action
    */
-  export type CourseDeadlineDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SessionWindowDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CourseDeadline
+     * Select specific fields to fetch from the SessionWindow
      */
-    select?: CourseDeadlineSelect<ExtArgs> | null
+    select?: SessionWindowSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CourseDeadline
+     * Omit specific fields from the SessionWindow
      */
-    omit?: CourseDeadlineOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CourseDeadlineInclude<ExtArgs> | null
+    omit?: SessionWindowOmit<ExtArgs> | null
   }
 
 
@@ -6631,6 +6553,7 @@ export namespace Prisma {
     status: $Enums.StatusTugas | null
     nilai: number | null
     deskripsi: string | null
+    openAt: Date | null
     deadlineAt: Date | null
     selesaiAt: Date | null
     createdAt: Date | null
@@ -6645,6 +6568,7 @@ export namespace Prisma {
     status: $Enums.StatusTugas | null
     nilai: number | null
     deskripsi: string | null
+    openAt: Date | null
     deadlineAt: Date | null
     selesaiAt: Date | null
     createdAt: Date | null
@@ -6659,6 +6583,7 @@ export namespace Prisma {
     status: number
     nilai: number
     deskripsi: number
+    openAt: number
     deadlineAt: number
     selesaiAt: number
     createdAt: number
@@ -6689,6 +6614,7 @@ export namespace Prisma {
     status?: true
     nilai?: true
     deskripsi?: true
+    openAt?: true
     deadlineAt?: true
     selesaiAt?: true
     createdAt?: true
@@ -6703,6 +6629,7 @@ export namespace Prisma {
     status?: true
     nilai?: true
     deskripsi?: true
+    openAt?: true
     deadlineAt?: true
     selesaiAt?: true
     createdAt?: true
@@ -6717,6 +6644,7 @@ export namespace Prisma {
     status?: true
     nilai?: true
     deskripsi?: true
+    openAt?: true
     deadlineAt?: true
     selesaiAt?: true
     createdAt?: true
@@ -6818,6 +6746,7 @@ export namespace Prisma {
     status: $Enums.StatusTugas
     nilai: number | null
     deskripsi: string | null
+    openAt: Date | null
     deadlineAt: Date | null
     selesaiAt: Date | null
     createdAt: Date
@@ -6851,6 +6780,7 @@ export namespace Prisma {
     status?: boolean
     nilai?: boolean
     deskripsi?: boolean
+    openAt?: boolean
     deadlineAt?: boolean
     selesaiAt?: boolean
     createdAt?: boolean
@@ -6870,13 +6800,14 @@ export namespace Prisma {
     status?: boolean
     nilai?: boolean
     deskripsi?: boolean
+    openAt?: boolean
     deadlineAt?: boolean
     selesaiAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type TutonItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "enrollmentId" | "jenis" | "sesi" | "status" | "nilai" | "deskripsi" | "deadlineAt" | "selesaiAt" | "createdAt" | "updatedAt", ExtArgs["result"]["tutonItem"]>
+  export type TutonItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "enrollmentId" | "jenis" | "sesi" | "status" | "nilai" | "deskripsi" | "openAt" | "deadlineAt" | "selesaiAt" | "createdAt" | "updatedAt", ExtArgs["result"]["tutonItem"]>
   export type TutonItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     reminders?: boolean | TutonItem$remindersArgs<ExtArgs>
     enrollment?: boolean | EnrollmentDefaultArgs<ExtArgs>
@@ -6897,6 +6828,7 @@ export namespace Prisma {
       status: $Enums.StatusTugas
       nilai: number | null
       deskripsi: string | null
+      openAt: Date | null
       deadlineAt: Date | null
       selesaiAt: Date | null
       createdAt: Date
@@ -7279,6 +7211,7 @@ export namespace Prisma {
     readonly status: FieldRef<"TutonItem", 'StatusTugas'>
     readonly nilai: FieldRef<"TutonItem", 'Float'>
     readonly deskripsi: FieldRef<"TutonItem", 'String'>
+    readonly openAt: FieldRef<"TutonItem", 'DateTime'>
     readonly deadlineAt: FieldRef<"TutonItem", 'DateTime'>
     readonly selesaiAt: FieldRef<"TutonItem", 'DateTime'>
     readonly createdAt: FieldRef<"TutonItem", 'DateTime'>
@@ -8781,15 +8714,17 @@ export namespace Prisma {
   export type CourseScalarFieldEnum = (typeof CourseScalarFieldEnum)[keyof typeof CourseScalarFieldEnum]
 
 
-  export const CourseDeadlineScalarFieldEnum: {
+  export const SessionWindowScalarFieldEnum: {
     id: 'id',
-    courseId: 'courseId',
-    jenis: 'jenis',
     sesi: 'sesi',
-    deadlineAt: 'deadlineAt'
+    jenis: 'jenis',
+    startAt: 'startAt',
+    endAt: 'endAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
-  export type CourseDeadlineScalarFieldEnum = (typeof CourseDeadlineScalarFieldEnum)[keyof typeof CourseDeadlineScalarFieldEnum]
+  export type SessionWindowScalarFieldEnum = (typeof SessionWindowScalarFieldEnum)[keyof typeof SessionWindowScalarFieldEnum]
 
 
   export const EnrollmentScalarFieldEnum: {
@@ -8811,6 +8746,7 @@ export namespace Prisma {
     status: 'status',
     nilai: 'nilai',
     deskripsi: 'deskripsi',
+    openAt: 'openAt',
     deadlineAt: 'deadlineAt',
     selesaiAt: 'selesaiAt',
     createdAt: 'createdAt',
@@ -9116,7 +9052,6 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Course"> | Date | string
     updatedAt?: DateTimeFilter<"Course"> | Date | string
     enrollments?: EnrollmentListRelationFilter
-    courseDeadlines?: CourseDeadlineListRelationFilter
   }
 
   export type CourseOrderByWithRelationInput = {
@@ -9125,7 +9060,6 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     enrollments?: EnrollmentOrderByRelationAggregateInput
-    courseDeadlines?: CourseDeadlineOrderByRelationAggregateInput
     _relevance?: CourseOrderByRelevanceInput
   }
 
@@ -9138,7 +9072,6 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Course"> | Date | string
     updatedAt?: DateTimeFilter<"Course"> | Date | string
     enrollments?: EnrollmentListRelationFilter
-    courseDeadlines?: CourseDeadlineListRelationFilter
   }, "id" | "nama">
 
   export type CourseOrderByWithAggregationInput = {
@@ -9163,62 +9096,69 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Course"> | Date | string
   }
 
-  export type CourseDeadlineWhereInput = {
-    AND?: CourseDeadlineWhereInput | CourseDeadlineWhereInput[]
-    OR?: CourseDeadlineWhereInput[]
-    NOT?: CourseDeadlineWhereInput | CourseDeadlineWhereInput[]
-    id?: IntFilter<"CourseDeadline"> | number
-    courseId?: IntFilter<"CourseDeadline"> | number
-    jenis?: EnumJenisTugasFilter<"CourseDeadline"> | $Enums.JenisTugas
-    sesi?: IntFilter<"CourseDeadline"> | number
-    deadlineAt?: DateTimeNullableFilter<"CourseDeadline"> | Date | string | null
-    course?: XOR<CourseScalarRelationFilter, CourseWhereInput>
+  export type SessionWindowWhereInput = {
+    AND?: SessionWindowWhereInput | SessionWindowWhereInput[]
+    OR?: SessionWindowWhereInput[]
+    NOT?: SessionWindowWhereInput | SessionWindowWhereInput[]
+    id?: IntFilter<"SessionWindow"> | number
+    sesi?: IntFilter<"SessionWindow"> | number
+    jenis?: EnumJenisTugasFilter<"SessionWindow"> | $Enums.JenisTugas
+    startAt?: DateTimeFilter<"SessionWindow"> | Date | string
+    endAt?: DateTimeFilter<"SessionWindow"> | Date | string
+    createdAt?: DateTimeFilter<"SessionWindow"> | Date | string
+    updatedAt?: DateTimeFilter<"SessionWindow"> | Date | string
   }
 
-  export type CourseDeadlineOrderByWithRelationInput = {
+  export type SessionWindowOrderByWithRelationInput = {
     id?: SortOrder
-    courseId?: SortOrder
-    jenis?: SortOrder
     sesi?: SortOrder
-    deadlineAt?: SortOrderInput | SortOrder
-    course?: CourseOrderByWithRelationInput
+    jenis?: SortOrder
+    startAt?: SortOrder
+    endAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
-  export type CourseDeadlineWhereUniqueInput = Prisma.AtLeast<{
+  export type SessionWindowWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    courseId_jenis_sesi?: CourseDeadlineCourseIdJenisSesiCompoundUniqueInput
-    AND?: CourseDeadlineWhereInput | CourseDeadlineWhereInput[]
-    OR?: CourseDeadlineWhereInput[]
-    NOT?: CourseDeadlineWhereInput | CourseDeadlineWhereInput[]
-    courseId?: IntFilter<"CourseDeadline"> | number
-    jenis?: EnumJenisTugasFilter<"CourseDeadline"> | $Enums.JenisTugas
-    sesi?: IntFilter<"CourseDeadline"> | number
-    deadlineAt?: DateTimeNullableFilter<"CourseDeadline"> | Date | string | null
-    course?: XOR<CourseScalarRelationFilter, CourseWhereInput>
-  }, "id" | "courseId_jenis_sesi">
+    sesi_jenis?: SessionWindowSesiJenisCompoundUniqueInput
+    AND?: SessionWindowWhereInput | SessionWindowWhereInput[]
+    OR?: SessionWindowWhereInput[]
+    NOT?: SessionWindowWhereInput | SessionWindowWhereInput[]
+    sesi?: IntFilter<"SessionWindow"> | number
+    jenis?: EnumJenisTugasFilter<"SessionWindow"> | $Enums.JenisTugas
+    startAt?: DateTimeFilter<"SessionWindow"> | Date | string
+    endAt?: DateTimeFilter<"SessionWindow"> | Date | string
+    createdAt?: DateTimeFilter<"SessionWindow"> | Date | string
+    updatedAt?: DateTimeFilter<"SessionWindow"> | Date | string
+  }, "id" | "sesi_jenis">
 
-  export type CourseDeadlineOrderByWithAggregationInput = {
+  export type SessionWindowOrderByWithAggregationInput = {
     id?: SortOrder
-    courseId?: SortOrder
-    jenis?: SortOrder
     sesi?: SortOrder
-    deadlineAt?: SortOrderInput | SortOrder
-    _count?: CourseDeadlineCountOrderByAggregateInput
-    _avg?: CourseDeadlineAvgOrderByAggregateInput
-    _max?: CourseDeadlineMaxOrderByAggregateInput
-    _min?: CourseDeadlineMinOrderByAggregateInput
-    _sum?: CourseDeadlineSumOrderByAggregateInput
+    jenis?: SortOrder
+    startAt?: SortOrder
+    endAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SessionWindowCountOrderByAggregateInput
+    _avg?: SessionWindowAvgOrderByAggregateInput
+    _max?: SessionWindowMaxOrderByAggregateInput
+    _min?: SessionWindowMinOrderByAggregateInput
+    _sum?: SessionWindowSumOrderByAggregateInput
   }
 
-  export type CourseDeadlineScalarWhereWithAggregatesInput = {
-    AND?: CourseDeadlineScalarWhereWithAggregatesInput | CourseDeadlineScalarWhereWithAggregatesInput[]
-    OR?: CourseDeadlineScalarWhereWithAggregatesInput[]
-    NOT?: CourseDeadlineScalarWhereWithAggregatesInput | CourseDeadlineScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"CourseDeadline"> | number
-    courseId?: IntWithAggregatesFilter<"CourseDeadline"> | number
-    jenis?: EnumJenisTugasWithAggregatesFilter<"CourseDeadline"> | $Enums.JenisTugas
-    sesi?: IntWithAggregatesFilter<"CourseDeadline"> | number
-    deadlineAt?: DateTimeNullableWithAggregatesFilter<"CourseDeadline"> | Date | string | null
+  export type SessionWindowScalarWhereWithAggregatesInput = {
+    AND?: SessionWindowScalarWhereWithAggregatesInput | SessionWindowScalarWhereWithAggregatesInput[]
+    OR?: SessionWindowScalarWhereWithAggregatesInput[]
+    NOT?: SessionWindowScalarWhereWithAggregatesInput | SessionWindowScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"SessionWindow"> | number
+    sesi?: IntWithAggregatesFilter<"SessionWindow"> | number
+    jenis?: EnumJenisTugasWithAggregatesFilter<"SessionWindow"> | $Enums.JenisTugas
+    startAt?: DateTimeWithAggregatesFilter<"SessionWindow"> | Date | string
+    endAt?: DateTimeWithAggregatesFilter<"SessionWindow"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"SessionWindow"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SessionWindow"> | Date | string
   }
 
   export type EnrollmentWhereInput = {
@@ -9296,6 +9236,7 @@ export namespace Prisma {
     status?: EnumStatusTugasFilter<"TutonItem"> | $Enums.StatusTugas
     nilai?: FloatNullableFilter<"TutonItem"> | number | null
     deskripsi?: StringNullableFilter<"TutonItem"> | string | null
+    openAt?: DateTimeNullableFilter<"TutonItem"> | Date | string | null
     deadlineAt?: DateTimeNullableFilter<"TutonItem"> | Date | string | null
     selesaiAt?: DateTimeNullableFilter<"TutonItem"> | Date | string | null
     createdAt?: DateTimeFilter<"TutonItem"> | Date | string
@@ -9312,6 +9253,7 @@ export namespace Prisma {
     status?: SortOrder
     nilai?: SortOrderInput | SortOrder
     deskripsi?: SortOrderInput | SortOrder
+    openAt?: SortOrderInput | SortOrder
     deadlineAt?: SortOrderInput | SortOrder
     selesaiAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -9333,6 +9275,7 @@ export namespace Prisma {
     status?: EnumStatusTugasFilter<"TutonItem"> | $Enums.StatusTugas
     nilai?: FloatNullableFilter<"TutonItem"> | number | null
     deskripsi?: StringNullableFilter<"TutonItem"> | string | null
+    openAt?: DateTimeNullableFilter<"TutonItem"> | Date | string | null
     deadlineAt?: DateTimeNullableFilter<"TutonItem"> | Date | string | null
     selesaiAt?: DateTimeNullableFilter<"TutonItem"> | Date | string | null
     createdAt?: DateTimeFilter<"TutonItem"> | Date | string
@@ -9349,6 +9292,7 @@ export namespace Prisma {
     status?: SortOrder
     nilai?: SortOrderInput | SortOrder
     deskripsi?: SortOrderInput | SortOrder
+    openAt?: SortOrderInput | SortOrder
     deadlineAt?: SortOrderInput | SortOrder
     selesaiAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -9371,6 +9315,7 @@ export namespace Prisma {
     status?: EnumStatusTugasWithAggregatesFilter<"TutonItem"> | $Enums.StatusTugas
     nilai?: FloatNullableWithAggregatesFilter<"TutonItem"> | number | null
     deskripsi?: StringNullableWithAggregatesFilter<"TutonItem"> | string | null
+    openAt?: DateTimeNullableWithAggregatesFilter<"TutonItem"> | Date | string | null
     deadlineAt?: DateTimeNullableWithAggregatesFilter<"TutonItem"> | Date | string | null
     selesaiAt?: DateTimeNullableWithAggregatesFilter<"TutonItem"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"TutonItem"> | Date | string
@@ -9608,7 +9553,6 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     enrollments?: EnrollmentCreateNestedManyWithoutCourseInput
-    courseDeadlines?: CourseDeadlineCreateNestedManyWithoutCourseInput
   }
 
   export type CourseUncheckedCreateInput = {
@@ -9617,7 +9561,6 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutCourseInput
-    courseDeadlines?: CourseDeadlineUncheckedCreateNestedManyWithoutCourseInput
   }
 
   export type CourseUpdateInput = {
@@ -9625,7 +9568,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     enrollments?: EnrollmentUpdateManyWithoutCourseNestedInput
-    courseDeadlines?: CourseDeadlineUpdateManyWithoutCourseNestedInput
   }
 
   export type CourseUncheckedUpdateInput = {
@@ -9634,7 +9576,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     enrollments?: EnrollmentUncheckedUpdateManyWithoutCourseNestedInput
-    courseDeadlines?: CourseDeadlineUncheckedUpdateManyWithoutCourseNestedInput
   }
 
   export type CourseCreateManyInput = {
@@ -9657,56 +9598,71 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CourseDeadlineCreateInput = {
-    jenis: $Enums.JenisTugas
+  export type SessionWindowCreateInput = {
     sesi: number
-    deadlineAt?: Date | string | null
-    course: CourseCreateNestedOneWithoutCourseDeadlinesInput
+    jenis: $Enums.JenisTugas
+    startAt: Date | string
+    endAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type CourseDeadlineUncheckedCreateInput = {
+  export type SessionWindowUncheckedCreateInput = {
     id?: number
-    courseId: number
-    jenis: $Enums.JenisTugas
     sesi: number
-    deadlineAt?: Date | string | null
+    jenis: $Enums.JenisTugas
+    startAt: Date | string
+    endAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type CourseDeadlineUpdateInput = {
-    jenis?: EnumJenisTugasFieldUpdateOperationsInput | $Enums.JenisTugas
+  export type SessionWindowUpdateInput = {
     sesi?: IntFieldUpdateOperationsInput | number
-    deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    course?: CourseUpdateOneRequiredWithoutCourseDeadlinesNestedInput
+    jenis?: EnumJenisTugasFieldUpdateOperationsInput | $Enums.JenisTugas
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CourseDeadlineUncheckedUpdateInput = {
+  export type SessionWindowUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    courseId?: IntFieldUpdateOperationsInput | number
-    jenis?: EnumJenisTugasFieldUpdateOperationsInput | $Enums.JenisTugas
     sesi?: IntFieldUpdateOperationsInput | number
-    deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    jenis?: EnumJenisTugasFieldUpdateOperationsInput | $Enums.JenisTugas
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CourseDeadlineCreateManyInput = {
+  export type SessionWindowCreateManyInput = {
     id?: number
-    courseId: number
-    jenis: $Enums.JenisTugas
     sesi: number
-    deadlineAt?: Date | string | null
+    jenis: $Enums.JenisTugas
+    startAt: Date | string
+    endAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type CourseDeadlineUpdateManyMutationInput = {
-    jenis?: EnumJenisTugasFieldUpdateOperationsInput | $Enums.JenisTugas
+  export type SessionWindowUpdateManyMutationInput = {
     sesi?: IntFieldUpdateOperationsInput | number
-    deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    jenis?: EnumJenisTugasFieldUpdateOperationsInput | $Enums.JenisTugas
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CourseDeadlineUncheckedUpdateManyInput = {
+  export type SessionWindowUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    courseId?: IntFieldUpdateOperationsInput | number
-    jenis?: EnumJenisTugasFieldUpdateOperationsInput | $Enums.JenisTugas
     sesi?: IntFieldUpdateOperationsInput | number
-    deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    jenis?: EnumJenisTugasFieldUpdateOperationsInput | $Enums.JenisTugas
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EnrollmentCreateInput = {
@@ -9770,6 +9726,7 @@ export namespace Prisma {
     status?: $Enums.StatusTugas
     nilai?: number | null
     deskripsi?: string | null
+    openAt?: Date | string | null
     deadlineAt?: Date | string | null
     selesaiAt?: Date | string | null
     createdAt?: Date | string
@@ -9786,6 +9743,7 @@ export namespace Prisma {
     status?: $Enums.StatusTugas
     nilai?: number | null
     deskripsi?: string | null
+    openAt?: Date | string | null
     deadlineAt?: Date | string | null
     selesaiAt?: Date | string | null
     createdAt?: Date | string
@@ -9799,6 +9757,7 @@ export namespace Prisma {
     status?: EnumStatusTugasFieldUpdateOperationsInput | $Enums.StatusTugas
     nilai?: NullableFloatFieldUpdateOperationsInput | number | null
     deskripsi?: NullableStringFieldUpdateOperationsInput | string | null
+    openAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selesaiAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9815,6 +9774,7 @@ export namespace Prisma {
     status?: EnumStatusTugasFieldUpdateOperationsInput | $Enums.StatusTugas
     nilai?: NullableFloatFieldUpdateOperationsInput | number | null
     deskripsi?: NullableStringFieldUpdateOperationsInput | string | null
+    openAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selesaiAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9830,6 +9790,7 @@ export namespace Prisma {
     status?: $Enums.StatusTugas
     nilai?: number | null
     deskripsi?: string | null
+    openAt?: Date | string | null
     deadlineAt?: Date | string | null
     selesaiAt?: Date | string | null
     createdAt?: Date | string
@@ -9842,6 +9803,7 @@ export namespace Prisma {
     status?: EnumStatusTugasFieldUpdateOperationsInput | $Enums.StatusTugas
     nilai?: NullableFloatFieldUpdateOperationsInput | number | null
     deskripsi?: NullableStringFieldUpdateOperationsInput | string | null
+    openAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selesaiAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9856,6 +9818,7 @@ export namespace Prisma {
     status?: EnumStatusTugasFieldUpdateOperationsInput | $Enums.StatusTugas
     nilai?: NullableFloatFieldUpdateOperationsInput | number | null
     deskripsi?: NullableStringFieldUpdateOperationsInput | string | null
+    openAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selesaiAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10175,16 +10138,6 @@ export namespace Prisma {
     id?: SortOrder
   }
 
-  export type CourseDeadlineListRelationFilter = {
-    every?: CourseDeadlineWhereInput
-    some?: CourseDeadlineWhereInput
-    none?: CourseDeadlineWhereInput
-  }
-
-  export type CourseDeadlineOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type CourseOrderByRelevanceInput = {
     fields: CourseOrderByRelevanceFieldEnum | CourseOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -10227,66 +10180,48 @@ export namespace Prisma {
     not?: NestedEnumJenisTugasFilter<$PrismaModel> | $Enums.JenisTugas
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | null
-    notIn?: Date[] | string[] | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type CourseScalarRelationFilter = {
-    is?: CourseWhereInput
-    isNot?: CourseWhereInput
-  }
-
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
-  }
-
-  export type CourseDeadlineCourseIdJenisSesiCompoundUniqueInput = {
-    courseId: number
-    jenis: $Enums.JenisTugas
+  export type SessionWindowSesiJenisCompoundUniqueInput = {
     sesi: number
+    jenis: $Enums.JenisTugas
   }
 
-  export type CourseDeadlineCountOrderByAggregateInput = {
+  export type SessionWindowCountOrderByAggregateInput = {
     id?: SortOrder
-    courseId?: SortOrder
+    sesi?: SortOrder
     jenis?: SortOrder
-    sesi?: SortOrder
-    deadlineAt?: SortOrder
+    startAt?: SortOrder
+    endAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
-  export type CourseDeadlineAvgOrderByAggregateInput = {
+  export type SessionWindowAvgOrderByAggregateInput = {
     id?: SortOrder
-    courseId?: SortOrder
     sesi?: SortOrder
   }
 
-  export type CourseDeadlineMaxOrderByAggregateInput = {
+  export type SessionWindowMaxOrderByAggregateInput = {
     id?: SortOrder
-    courseId?: SortOrder
+    sesi?: SortOrder
     jenis?: SortOrder
-    sesi?: SortOrder
-    deadlineAt?: SortOrder
+    startAt?: SortOrder
+    endAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
-  export type CourseDeadlineMinOrderByAggregateInput = {
+  export type SessionWindowMinOrderByAggregateInput = {
     id?: SortOrder
-    courseId?: SortOrder
+    sesi?: SortOrder
     jenis?: SortOrder
-    sesi?: SortOrder
-    deadlineAt?: SortOrder
+    startAt?: SortOrder
+    endAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
-  export type CourseDeadlineSumOrderByAggregateInput = {
+  export type SessionWindowSumOrderByAggregateInput = {
     id?: SortOrder
-    courseId?: SortOrder
     sesi?: SortOrder
   }
 
@@ -10300,20 +10235,6 @@ export namespace Prisma {
     _max?: NestedEnumJenisTugasFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | null
-    notIn?: Date[] | string[] | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
   export type TutonItemListRelationFilter = {
     every?: TutonItemWhereInput
     some?: TutonItemWhereInput
@@ -10323,6 +10244,11 @@ export namespace Prisma {
   export type StudentScalarRelationFilter = {
     is?: StudentWhereInput
     isNot?: StudentWhereInput
+  }
+
+  export type CourseScalarRelationFilter = {
+    is?: CourseWhereInput
+    isNot?: CourseWhereInput
   }
 
   export type TutonItemOrderByRelationAggregateInput = {
@@ -10403,9 +10329,25 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type EnrollmentScalarRelationFilter = {
     is?: EnrollmentWhereInput
     isNot?: EnrollmentWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
   }
 
   export type TutonItemOrderByRelevanceInput = {
@@ -10428,6 +10370,7 @@ export namespace Prisma {
     status?: SortOrder
     nilai?: SortOrder
     deskripsi?: SortOrder
+    openAt?: SortOrder
     deadlineAt?: SortOrder
     selesaiAt?: SortOrder
     createdAt?: SortOrder
@@ -10449,6 +10392,7 @@ export namespace Prisma {
     status?: SortOrder
     nilai?: SortOrder
     deskripsi?: SortOrder
+    openAt?: SortOrder
     deadlineAt?: SortOrder
     selesaiAt?: SortOrder
     createdAt?: SortOrder
@@ -10463,6 +10407,7 @@ export namespace Prisma {
     status?: SortOrder
     nilai?: SortOrder
     deskripsi?: SortOrder
+    openAt?: SortOrder
     deadlineAt?: SortOrder
     selesaiAt?: SortOrder
     createdAt?: SortOrder
@@ -10518,6 +10463,20 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type EnumReminderSourceFilter<$PrismaModel = never> = {
@@ -10785,25 +10744,11 @@ export namespace Prisma {
     connect?: EnrollmentWhereUniqueInput | EnrollmentWhereUniqueInput[]
   }
 
-  export type CourseDeadlineCreateNestedManyWithoutCourseInput = {
-    create?: XOR<CourseDeadlineCreateWithoutCourseInput, CourseDeadlineUncheckedCreateWithoutCourseInput> | CourseDeadlineCreateWithoutCourseInput[] | CourseDeadlineUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: CourseDeadlineCreateOrConnectWithoutCourseInput | CourseDeadlineCreateOrConnectWithoutCourseInput[]
-    createMany?: CourseDeadlineCreateManyCourseInputEnvelope
-    connect?: CourseDeadlineWhereUniqueInput | CourseDeadlineWhereUniqueInput[]
-  }
-
   export type EnrollmentUncheckedCreateNestedManyWithoutCourseInput = {
     create?: XOR<EnrollmentCreateWithoutCourseInput, EnrollmentUncheckedCreateWithoutCourseInput> | EnrollmentCreateWithoutCourseInput[] | EnrollmentUncheckedCreateWithoutCourseInput[]
     connectOrCreate?: EnrollmentCreateOrConnectWithoutCourseInput | EnrollmentCreateOrConnectWithoutCourseInput[]
     createMany?: EnrollmentCreateManyCourseInputEnvelope
     connect?: EnrollmentWhereUniqueInput | EnrollmentWhereUniqueInput[]
-  }
-
-  export type CourseDeadlineUncheckedCreateNestedManyWithoutCourseInput = {
-    create?: XOR<CourseDeadlineCreateWithoutCourseInput, CourseDeadlineUncheckedCreateWithoutCourseInput> | CourseDeadlineCreateWithoutCourseInput[] | CourseDeadlineUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: CourseDeadlineCreateOrConnectWithoutCourseInput | CourseDeadlineCreateOrConnectWithoutCourseInput[]
-    createMany?: CourseDeadlineCreateManyCourseInputEnvelope
-    connect?: CourseDeadlineWhereUniqueInput | CourseDeadlineWhereUniqueInput[]
   }
 
   export type EnrollmentUpdateManyWithoutCourseNestedInput = {
@@ -10820,20 +10765,6 @@ export namespace Prisma {
     deleteMany?: EnrollmentScalarWhereInput | EnrollmentScalarWhereInput[]
   }
 
-  export type CourseDeadlineUpdateManyWithoutCourseNestedInput = {
-    create?: XOR<CourseDeadlineCreateWithoutCourseInput, CourseDeadlineUncheckedCreateWithoutCourseInput> | CourseDeadlineCreateWithoutCourseInput[] | CourseDeadlineUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: CourseDeadlineCreateOrConnectWithoutCourseInput | CourseDeadlineCreateOrConnectWithoutCourseInput[]
-    upsert?: CourseDeadlineUpsertWithWhereUniqueWithoutCourseInput | CourseDeadlineUpsertWithWhereUniqueWithoutCourseInput[]
-    createMany?: CourseDeadlineCreateManyCourseInputEnvelope
-    set?: CourseDeadlineWhereUniqueInput | CourseDeadlineWhereUniqueInput[]
-    disconnect?: CourseDeadlineWhereUniqueInput | CourseDeadlineWhereUniqueInput[]
-    delete?: CourseDeadlineWhereUniqueInput | CourseDeadlineWhereUniqueInput[]
-    connect?: CourseDeadlineWhereUniqueInput | CourseDeadlineWhereUniqueInput[]
-    update?: CourseDeadlineUpdateWithWhereUniqueWithoutCourseInput | CourseDeadlineUpdateWithWhereUniqueWithoutCourseInput[]
-    updateMany?: CourseDeadlineUpdateManyWithWhereWithoutCourseInput | CourseDeadlineUpdateManyWithWhereWithoutCourseInput[]
-    deleteMany?: CourseDeadlineScalarWhereInput | CourseDeadlineScalarWhereInput[]
-  }
-
   export type EnrollmentUncheckedUpdateManyWithoutCourseNestedInput = {
     create?: XOR<EnrollmentCreateWithoutCourseInput, EnrollmentUncheckedCreateWithoutCourseInput> | EnrollmentCreateWithoutCourseInput[] | EnrollmentUncheckedCreateWithoutCourseInput[]
     connectOrCreate?: EnrollmentCreateOrConnectWithoutCourseInput | EnrollmentCreateOrConnectWithoutCourseInput[]
@@ -10848,40 +10779,8 @@ export namespace Prisma {
     deleteMany?: EnrollmentScalarWhereInput | EnrollmentScalarWhereInput[]
   }
 
-  export type CourseDeadlineUncheckedUpdateManyWithoutCourseNestedInput = {
-    create?: XOR<CourseDeadlineCreateWithoutCourseInput, CourseDeadlineUncheckedCreateWithoutCourseInput> | CourseDeadlineCreateWithoutCourseInput[] | CourseDeadlineUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: CourseDeadlineCreateOrConnectWithoutCourseInput | CourseDeadlineCreateOrConnectWithoutCourseInput[]
-    upsert?: CourseDeadlineUpsertWithWhereUniqueWithoutCourseInput | CourseDeadlineUpsertWithWhereUniqueWithoutCourseInput[]
-    createMany?: CourseDeadlineCreateManyCourseInputEnvelope
-    set?: CourseDeadlineWhereUniqueInput | CourseDeadlineWhereUniqueInput[]
-    disconnect?: CourseDeadlineWhereUniqueInput | CourseDeadlineWhereUniqueInput[]
-    delete?: CourseDeadlineWhereUniqueInput | CourseDeadlineWhereUniqueInput[]
-    connect?: CourseDeadlineWhereUniqueInput | CourseDeadlineWhereUniqueInput[]
-    update?: CourseDeadlineUpdateWithWhereUniqueWithoutCourseInput | CourseDeadlineUpdateWithWhereUniqueWithoutCourseInput[]
-    updateMany?: CourseDeadlineUpdateManyWithWhereWithoutCourseInput | CourseDeadlineUpdateManyWithWhereWithoutCourseInput[]
-    deleteMany?: CourseDeadlineScalarWhereInput | CourseDeadlineScalarWhereInput[]
-  }
-
-  export type CourseCreateNestedOneWithoutCourseDeadlinesInput = {
-    create?: XOR<CourseCreateWithoutCourseDeadlinesInput, CourseUncheckedCreateWithoutCourseDeadlinesInput>
-    connectOrCreate?: CourseCreateOrConnectWithoutCourseDeadlinesInput
-    connect?: CourseWhereUniqueInput
-  }
-
   export type EnumJenisTugasFieldUpdateOperationsInput = {
     set?: $Enums.JenisTugas
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
-  export type CourseUpdateOneRequiredWithoutCourseDeadlinesNestedInput = {
-    create?: XOR<CourseCreateWithoutCourseDeadlinesInput, CourseUncheckedCreateWithoutCourseDeadlinesInput>
-    connectOrCreate?: CourseCreateOrConnectWithoutCourseDeadlinesInput
-    upsert?: CourseUpsertWithoutCourseDeadlinesInput
-    connect?: CourseWhereUniqueInput
-    update?: XOR<XOR<CourseUpdateToOneWithWhereWithoutCourseDeadlinesInput, CourseUpdateWithoutCourseDeadlinesInput>, CourseUncheckedUpdateWithoutCourseDeadlinesInput>
   }
 
   export type TutonItemCreateNestedManyWithoutEnrollmentInput = {
@@ -10988,6 +10887,10 @@ export namespace Prisma {
 
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type ReminderUpdateManyWithoutItemNestedInput = {
@@ -11209,17 +11112,6 @@ export namespace Prisma {
     not?: NestedEnumJenisTugasFilter<$PrismaModel> | $Enums.JenisTugas
   }
 
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | null
-    notIn?: Date[] | string[] | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type NestedEnumJenisTugasWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.JenisTugas | EnumJenisTugasFieldRefInput<$PrismaModel>
     in?: $Enums.JenisTugas[]
@@ -11228,31 +11120,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumJenisTugasFilter<$PrismaModel>
     _max?: NestedEnumJenisTugasFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | null
-    notIn?: Date[] | string[] | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedEnumStatusTugasFilter<$PrismaModel = never> = {
@@ -11288,6 +11155,17 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedEnumStatusTugasWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.StatusTugas | EnumStatusTugasFieldRefInput<$PrismaModel>
     in?: $Enums.StatusTugas[]
@@ -11314,6 +11192,17 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | null
@@ -11330,6 +11219,20 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumReminderSourceFilter<$PrismaModel = never> = {
@@ -11544,29 +11447,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type CourseDeadlineCreateWithoutCourseInput = {
-    jenis: $Enums.JenisTugas
-    sesi: number
-    deadlineAt?: Date | string | null
-  }
-
-  export type CourseDeadlineUncheckedCreateWithoutCourseInput = {
-    id?: number
-    jenis: $Enums.JenisTugas
-    sesi: number
-    deadlineAt?: Date | string | null
-  }
-
-  export type CourseDeadlineCreateOrConnectWithoutCourseInput = {
-    where: CourseDeadlineWhereUniqueInput
-    create: XOR<CourseDeadlineCreateWithoutCourseInput, CourseDeadlineUncheckedCreateWithoutCourseInput>
-  }
-
-  export type CourseDeadlineCreateManyCourseInputEnvelope = {
-    data: CourseDeadlineCreateManyCourseInput | CourseDeadlineCreateManyCourseInput[]
-    skipDuplicates?: boolean
-  }
-
   export type EnrollmentUpsertWithWhereUniqueWithoutCourseInput = {
     where: EnrollmentWhereUniqueInput
     update: XOR<EnrollmentUpdateWithoutCourseInput, EnrollmentUncheckedUpdateWithoutCourseInput>
@@ -11583,85 +11463,13 @@ export namespace Prisma {
     data: XOR<EnrollmentUpdateManyMutationInput, EnrollmentUncheckedUpdateManyWithoutCourseInput>
   }
 
-  export type CourseDeadlineUpsertWithWhereUniqueWithoutCourseInput = {
-    where: CourseDeadlineWhereUniqueInput
-    update: XOR<CourseDeadlineUpdateWithoutCourseInput, CourseDeadlineUncheckedUpdateWithoutCourseInput>
-    create: XOR<CourseDeadlineCreateWithoutCourseInput, CourseDeadlineUncheckedCreateWithoutCourseInput>
-  }
-
-  export type CourseDeadlineUpdateWithWhereUniqueWithoutCourseInput = {
-    where: CourseDeadlineWhereUniqueInput
-    data: XOR<CourseDeadlineUpdateWithoutCourseInput, CourseDeadlineUncheckedUpdateWithoutCourseInput>
-  }
-
-  export type CourseDeadlineUpdateManyWithWhereWithoutCourseInput = {
-    where: CourseDeadlineScalarWhereInput
-    data: XOR<CourseDeadlineUpdateManyMutationInput, CourseDeadlineUncheckedUpdateManyWithoutCourseInput>
-  }
-
-  export type CourseDeadlineScalarWhereInput = {
-    AND?: CourseDeadlineScalarWhereInput | CourseDeadlineScalarWhereInput[]
-    OR?: CourseDeadlineScalarWhereInput[]
-    NOT?: CourseDeadlineScalarWhereInput | CourseDeadlineScalarWhereInput[]
-    id?: IntFilter<"CourseDeadline"> | number
-    courseId?: IntFilter<"CourseDeadline"> | number
-    jenis?: EnumJenisTugasFilter<"CourseDeadline"> | $Enums.JenisTugas
-    sesi?: IntFilter<"CourseDeadline"> | number
-    deadlineAt?: DateTimeNullableFilter<"CourseDeadline"> | Date | string | null
-  }
-
-  export type CourseCreateWithoutCourseDeadlinesInput = {
-    nama: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    enrollments?: EnrollmentCreateNestedManyWithoutCourseInput
-  }
-
-  export type CourseUncheckedCreateWithoutCourseDeadlinesInput = {
-    id?: number
-    nama: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutCourseInput
-  }
-
-  export type CourseCreateOrConnectWithoutCourseDeadlinesInput = {
-    where: CourseWhereUniqueInput
-    create: XOR<CourseCreateWithoutCourseDeadlinesInput, CourseUncheckedCreateWithoutCourseDeadlinesInput>
-  }
-
-  export type CourseUpsertWithoutCourseDeadlinesInput = {
-    update: XOR<CourseUpdateWithoutCourseDeadlinesInput, CourseUncheckedUpdateWithoutCourseDeadlinesInput>
-    create: XOR<CourseCreateWithoutCourseDeadlinesInput, CourseUncheckedCreateWithoutCourseDeadlinesInput>
-    where?: CourseWhereInput
-  }
-
-  export type CourseUpdateToOneWithWhereWithoutCourseDeadlinesInput = {
-    where?: CourseWhereInput
-    data: XOR<CourseUpdateWithoutCourseDeadlinesInput, CourseUncheckedUpdateWithoutCourseDeadlinesInput>
-  }
-
-  export type CourseUpdateWithoutCourseDeadlinesInput = {
-    nama?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    enrollments?: EnrollmentUpdateManyWithoutCourseNestedInput
-  }
-
-  export type CourseUncheckedUpdateWithoutCourseDeadlinesInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    nama?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    enrollments?: EnrollmentUncheckedUpdateManyWithoutCourseNestedInput
-  }
-
   export type TutonItemCreateWithoutEnrollmentInput = {
     jenis: $Enums.JenisTugas
     sesi: number
     status?: $Enums.StatusTugas
     nilai?: number | null
     deskripsi?: string | null
+    openAt?: Date | string | null
     deadlineAt?: Date | string | null
     selesaiAt?: Date | string | null
     createdAt?: Date | string
@@ -11676,6 +11484,7 @@ export namespace Prisma {
     status?: $Enums.StatusTugas
     nilai?: number | null
     deskripsi?: string | null
+    openAt?: Date | string | null
     deadlineAt?: Date | string | null
     selesaiAt?: Date | string | null
     createdAt?: Date | string
@@ -11719,7 +11528,6 @@ export namespace Prisma {
     nama: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    courseDeadlines?: CourseDeadlineCreateNestedManyWithoutCourseInput
   }
 
   export type CourseUncheckedCreateWithoutEnrollmentsInput = {
@@ -11727,7 +11535,6 @@ export namespace Prisma {
     nama: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    courseDeadlines?: CourseDeadlineUncheckedCreateNestedManyWithoutCourseInput
   }
 
   export type CourseCreateOrConnectWithoutEnrollmentsInput = {
@@ -11762,6 +11569,7 @@ export namespace Prisma {
     status?: EnumStatusTugasFilter<"TutonItem"> | $Enums.StatusTugas
     nilai?: FloatNullableFilter<"TutonItem"> | number | null
     deskripsi?: StringNullableFilter<"TutonItem"> | string | null
+    openAt?: DateTimeNullableFilter<"TutonItem"> | Date | string | null
     deadlineAt?: DateTimeNullableFilter<"TutonItem"> | Date | string | null
     selesaiAt?: DateTimeNullableFilter<"TutonItem"> | Date | string | null
     createdAt?: DateTimeFilter<"TutonItem"> | Date | string
@@ -11811,7 +11619,6 @@ export namespace Prisma {
     nama?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    courseDeadlines?: CourseDeadlineUpdateManyWithoutCourseNestedInput
   }
 
   export type CourseUncheckedUpdateWithoutEnrollmentsInput = {
@@ -11819,7 +11626,6 @@ export namespace Prisma {
     nama?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    courseDeadlines?: CourseDeadlineUncheckedUpdateManyWithoutCourseNestedInput
   }
 
   export type ReminderCreateWithoutItemInput = {
@@ -11925,6 +11731,7 @@ export namespace Prisma {
     status?: $Enums.StatusTugas
     nilai?: number | null
     deskripsi?: string | null
+    openAt?: Date | string | null
     deadlineAt?: Date | string | null
     selesaiAt?: Date | string | null
     createdAt?: Date | string
@@ -11940,6 +11747,7 @@ export namespace Prisma {
     status?: $Enums.StatusTugas
     nilai?: number | null
     deskripsi?: string | null
+    openAt?: Date | string | null
     deadlineAt?: Date | string | null
     selesaiAt?: Date | string | null
     createdAt?: Date | string
@@ -11992,6 +11800,7 @@ export namespace Prisma {
     status?: EnumStatusTugasFieldUpdateOperationsInput | $Enums.StatusTugas
     nilai?: NullableFloatFieldUpdateOperationsInput | number | null
     deskripsi?: NullableStringFieldUpdateOperationsInput | string | null
+    openAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selesaiAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12007,6 +11816,7 @@ export namespace Prisma {
     status?: EnumStatusTugasFieldUpdateOperationsInput | $Enums.StatusTugas
     nilai?: NullableFloatFieldUpdateOperationsInput | number | null
     deskripsi?: NullableStringFieldUpdateOperationsInput | string | null
+    openAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selesaiAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12130,13 +11940,6 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type CourseDeadlineCreateManyCourseInput = {
-    id?: number
-    jenis: $Enums.JenisTugas
-    sesi: number
-    deadlineAt?: Date | string | null
-  }
-
   export type EnrollmentUpdateWithoutCourseInput = {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12159,26 +11962,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CourseDeadlineUpdateWithoutCourseInput = {
-    jenis?: EnumJenisTugasFieldUpdateOperationsInput | $Enums.JenisTugas
-    sesi?: IntFieldUpdateOperationsInput | number
-    deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type CourseDeadlineUncheckedUpdateWithoutCourseInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    jenis?: EnumJenisTugasFieldUpdateOperationsInput | $Enums.JenisTugas
-    sesi?: IntFieldUpdateOperationsInput | number
-    deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type CourseDeadlineUncheckedUpdateManyWithoutCourseInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    jenis?: EnumJenisTugasFieldUpdateOperationsInput | $Enums.JenisTugas
-    sesi?: IntFieldUpdateOperationsInput | number
-    deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
   export type TutonItemCreateManyEnrollmentInput = {
     id?: number
     jenis: $Enums.JenisTugas
@@ -12186,6 +11969,7 @@ export namespace Prisma {
     status?: $Enums.StatusTugas
     nilai?: number | null
     deskripsi?: string | null
+    openAt?: Date | string | null
     deadlineAt?: Date | string | null
     selesaiAt?: Date | string | null
     createdAt?: Date | string
@@ -12198,6 +11982,7 @@ export namespace Prisma {
     status?: EnumStatusTugasFieldUpdateOperationsInput | $Enums.StatusTugas
     nilai?: NullableFloatFieldUpdateOperationsInput | number | null
     deskripsi?: NullableStringFieldUpdateOperationsInput | string | null
+    openAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selesaiAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12212,6 +11997,7 @@ export namespace Prisma {
     status?: EnumStatusTugasFieldUpdateOperationsInput | $Enums.StatusTugas
     nilai?: NullableFloatFieldUpdateOperationsInput | number | null
     deskripsi?: NullableStringFieldUpdateOperationsInput | string | null
+    openAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selesaiAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12226,6 +12012,7 @@ export namespace Prisma {
     status?: EnumStatusTugasFieldUpdateOperationsInput | $Enums.StatusTugas
     nilai?: NullableFloatFieldUpdateOperationsInput | number | null
     deskripsi?: NullableStringFieldUpdateOperationsInput | string | null
+    openAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selesaiAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

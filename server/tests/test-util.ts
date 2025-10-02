@@ -130,30 +130,6 @@ export class CourseTest {
       select: { id: true, nama: true },
     });
   }
-
-  /** Seed sebagian deadline untuk verifikasi copy ke TutonItem saat enroll (PAKAI CourseDeadline) */
-  static async seedDeadlines(courseId: number, base = new Date()) {
-    const d = (days: number, h = 23, m = 59) =>
-      new Date(base.getFullYear(), base.getMonth(), base.getDate() + days, h, m, 0, 0);
-
-    await prismaClient.courseDeadline.deleteMany({ where: { courseId } });
-    await prismaClient.courseDeadline.createMany({
-      data: [
-        { courseId, jenis: JenisTugas.DISKUSI, sesi: 1, deadlineAt: d(1) },
-        { courseId, jenis: JenisTugas.DISKUSI, sesi: 2, deadlineAt: d(2) },
-        { courseId, jenis: JenisTugas.ABSEN,   sesi: 1, deadlineAt: d(1, 12, 0) },
-        { courseId, jenis: JenisTugas.TUGAS,   sesi: 3, deadlineAt: d(5, 20, 0) },
-        { courseId, jenis: JenisTugas.QUIZ,    sesi: 2, deadlineAt: d(7, 9, 0) },
-      ],
-    });
-  }
-
-  static async cleanup() {
-    await prismaClient.courseDeadline.deleteMany({});
-    await prismaClient.course.deleteMany({
-      where: { nama: { startsWith: "TEST-COURSE" } },
-    });
-  }
 }
 
 /* ===================== ENROLLMENT (helper utk test) ===================== */

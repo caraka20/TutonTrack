@@ -6,7 +6,6 @@ import { JenisTugas } from "@prisma/client"
 
 describe("Enrollment extra endpoints", () => {
   afterAll(async () => {
-    await CourseTest.cleanup()
     await StudentTest.cleanup()
     await AdminTest.cleanup()
     await prismaClient.$disconnect()
@@ -47,7 +46,6 @@ describe("Enrollment extra endpoints", () => {
   it("POST /api/enrollments/:enrollId/sync-deadlines → copy only this enrollment", async () => {
     // master deadlines
     const course = await CourseTest.createUnique()
-    await CourseTest.seedDeadlines(course.id)
 
     // student A (target sync)
     const { student: a, token: tokenA } = await StudentTest.registerAndLogin()

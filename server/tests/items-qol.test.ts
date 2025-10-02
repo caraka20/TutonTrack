@@ -5,7 +5,6 @@ import { AdminTest, CourseTest, EnrollmentTest, StudentTest } from "./test-util"
 
 describe("Items QoL", () => {
   afterAll(async () => {
-    await CourseTest.cleanup()
     await StudentTest.cleanup()
     await AdminTest.cleanup()
     await prismaClient.$disconnect()

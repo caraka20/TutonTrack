@@ -22,7 +22,6 @@ describe("Progress & Dashboard API", () => {
 
     // 1 course + deadlines template
     const c = await CourseTest.createUnique("TEST-COURSE Progress Seed");
-    await CourseTest.seedDeadlines(c.id, new Date());
 
     // enroll + generate items kosong deadline
     const enr = await EnrollmentTest.createWithItems(sid, c.id);
@@ -78,7 +77,6 @@ describe("Progress & Dashboard API", () => {
   });
 
   afterAll(async () => {
-    await CourseTest.cleanup();
     await StudentTest.cleanup();
     await AdminTest.cleanup();
     await prismaClient.$disconnect();

@@ -13,7 +13,6 @@ describe("ADMIN Dashboard API", () => {
   });
 
   afterAll(async () => {
-    await CourseTest.cleanup();
     await StudentTest.cleanup();
     await AdminTest.cleanup();
     await prismaClient.$disconnect();

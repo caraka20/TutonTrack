@@ -15,7 +15,6 @@ describe("Course API", () => {
   });
 
   afterAll(async () => {
-    await CourseTest.cleanup();
     await StudentTest.cleanup();
     await AdminTest.cleanup();
     await prismaClient.$disconnect();
@@ -77,7 +76,6 @@ describe("Course API", () => {
 
   it("PUT/GET/POST deadlines flow (admin)", async () => {
     const c = await CourseTest.createUnique("TEST-COURSE Pengantar Akuntansi");
-    await CourseTest.seedDeadlines(c.id, new Date());
 
     const newDeadlines: DL[] = [
       { jenis: JenisTugas.DISKUSI, sesi: 1, deadlineAt: new Date().toISOString() },
